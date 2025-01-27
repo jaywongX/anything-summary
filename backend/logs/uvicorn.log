@@ -1,0 +1,33 @@
+INFO:     Will watch for changes in these directories: ['/mnt/d/git/anything-summary/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [3607] using StatReload
+INFO:     Started server process [3610]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-01-28 00:35:30,479 - app.api.endpoints.summary - INFO - Creating new task with ID: 528003fa-2831-4e3d-ba05-714dd1bbb68b
+2025-01-28 00:35:30,485 - app.api.endpoints.summary - INFO - Saved file: uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt
+2025-01-28 00:35:31,407 - app.api.endpoints.summary - INFO - Created celery task with ID: 528003fa-2831-4e3d-ba05-714dd1bbb68b
+INFO:     127.0.0.1:57448 - "POST /api/summary HTTP/1.1" 200 OK
+2025-01-28 00:35:31,414 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:32,923 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:34,916 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:36,928 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:38,919 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:40,927 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: STARTED
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+2025-01-28 00:35:42,927 - app.api.endpoints.summary - INFO - Checking task 528003fa-2831-4e3d-ba05-714dd1bbb68b status: SUCCESS
+2025-01-28 00:35:42,928 - app.api.endpoints.summary - INFO - Task result: {'status': 'success', 'summary': '文件 uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt 摘要:\n该CMake脚本主要定义了一个测试服务器库和一系列cpr库的测试用例。核心要点如下：\n\n1. **项目配置**：要求最低CMake版本为3.15，并查找线程支持。\n2. **构建测试服务器库**：\n   - 根据`ENABLE_SSL_TESTS`标志决定是否包含HTTPS服务器代码。\n   - 在Windows平台上，链接额外的库（如`ws2_32`和`wsock32`）。\n3. **定义宏`add_cpr_test`**：用于创建并配置多个cpr库的测试用例，包括编译、链接、添加测试命令及在IDE中设置文件夹属性。\n4. **具体测试用例**：通过调用`add_cpr_test`宏，为各种HTTP方法（如GET, POST等）及其他功能（如异步请求、代理支持等）生成测试。\n5. **SSL测试支持**：如果启用了SSL测试，则会添加一个专门针对SSL的测试用例，并在构建后复制相关的证书和密钥文件到目标目录。\n\n此脚本展示了如何使用CMake来组织和管理复杂的多平台测试环境。'}
+INFO:     127.0.0.1:57448 - "GET /api/summary/528003fa-2831-4e3d-ba05-714dd1bbb68b HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3610]
+INFO:     Started server process [3624]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

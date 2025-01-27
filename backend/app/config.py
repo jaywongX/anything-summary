@@ -23,8 +23,12 @@ class Settings(BaseSettings):
     
     # ModelScope配置
     MODELSCOPE_TOKEN: str = ""
+    
+    # 阿里云API配置
+    ALI_API_KEY: str = ""
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
 
 settings = Settings() 

@@ -1,0 +1,66 @@
+[2025-01-28 00:33:16,165: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+[2025-01-28 00:33:16,203: DEBUG/MainProcess] | Worker: Building graph...
+[2025-01-28 00:33:16,204: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
+[2025-01-28 00:33:16,475: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+[2025-01-28 00:33:16,476: DEBUG/MainProcess] | Consumer: Building graph...
+[2025-01-28 00:33:16,774: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Heart, Agent, Mingle, Tasks, Control, Gossip, event loop}
+[2025-01-28 00:33:17,005: DEBUG/MainProcess] | Worker: Starting Hub
+[2025-01-28 00:33:17,006: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:17,006: DEBUG/MainProcess] | Worker: Starting Pool
+[2025-01-28 00:33:17,007: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:17,008: DEBUG/MainProcess] | Worker: Starting Consumer
+[2025-01-28 00:33:17,008: DEBUG/MainProcess] | Consumer: Starting Connection
+[2025-01-28 00:33:17,014: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2025-01-28 00:33:17,014: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:17,015: DEBUG/MainProcess] | Consumer: Starting Events
+[2025-01-28 00:33:17,016: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:17,017: DEBUG/MainProcess] | Consumer: Starting Heart
+[2025-01-28 00:33:17,019: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:17,019: DEBUG/MainProcess] | Consumer: Starting Mingle
+[2025-01-28 00:33:17,020: INFO/MainProcess] mingle: searching for neighbors
+[2025-01-28 00:33:18,029: INFO/MainProcess] mingle: sync with 1 nodes
+[2025-01-28 00:33:18,030: DEBUG/MainProcess] mingle: processing reply from worker1@LAPTOP-23FI8VL8
+[2025-01-28 00:33:18,030: INFO/MainProcess] mingle: sync complete
+[2025-01-28 00:33:18,031: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:18,031: DEBUG/MainProcess] | Consumer: Starting Tasks
+[2025-01-28 00:33:18,043: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:18,043: DEBUG/MainProcess] | Consumer: Starting Control
+[2025-01-28 00:33:18,046: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:18,046: DEBUG/MainProcess] | Consumer: Starting Gossip
+[2025-01-28 00:33:18,049: DEBUG/MainProcess] ^-- substep ok
+[2025-01-28 00:33:18,049: DEBUG/MainProcess] | Consumer: Starting event loop
+[2025-01-28 00:33:18,050: DEBUG/MainProcess] | Worker: Hub.register Pool...
+[2025-01-28 00:33:18,051: INFO/MainProcess] celery@LAPTOP-23FI8VL8 ready.
+[2025-01-28 00:33:18,052: DEBUG/MainProcess] basic.qos: prefetch_count->72
+[2025-01-28 00:33:19,593: DEBUG/MainProcess] worker1@LAPTOP-23FI8VL8 joined the party
+[2025-01-28 00:35:31,408: INFO/MainProcess] Task app.core.tasks.process_and_summarize[528003fa-2831-4e3d-ba05-714dd1bbb68b] received
+[2025-01-28 00:35:31,409: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x7f348a1e0860> (args:('app.core.tasks.process_and_summarize', '528003fa-2831-4e3d-ba05-714dd1bbb68b', {'lang': 'py', 'task': 'app.core.tasks.process_and_summarize', 'id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': "{'task_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'file_paths': ['uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt'], 'text': '', 'url': ''}", 'origin': 'gen3610@LAPTOP-23FI8VL8', 'ignore_result': False, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'reply_to': '8ff1362b-e753-3ce5-8869-e9eea1d7ca3f', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': '458ef14e-3556-4aa2-8454-84276aebae10'}, 'reply_to':... kwargs:{})
+[2025-01-28 00:35:31,411: INFO/MainProcess] Starting task 528003fa-2831-4e3d-ba05-714dd1bbb68b with params: files=['uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt'], text_length=0, url=
+[2025-01-28 00:35:31,412: DEBUG/MainProcess] Using selector: EpollSelector
+[2025-01-28 00:35:31,413: INFO/MainProcess] Processing 1 files
+[2025-01-28 00:35:31,414: INFO/MainProcess] Processing file: uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt
+[2025-01-28 00:35:31,417: INFO/MainProcess] File content length: 2961
+[2025-01-28 00:35:31,418: INFO/MainProcess] Starting summarization with content length: 2961
+[2025-01-28 00:35:31,419: INFO/MainProcess] Calling Ali API with model: qwen-max
+[2025-01-28 00:35:31,420: DEBUG/MainProcess] Request body: {'model': 'qwen-max', 'parameters': {'result_format': 'message', 'max_tokens': 800, 'temperature': 0.3}, 'input': {'messages': [{'role': 'system', 'content': '你是一个专业的文本总结助手，善于提取文本的核心内容并进行精炼总结。'}, {'role': 'user', 'content': '请对以下内容进行总结，要求：\n1. 提取核心要点\n2. 保持客观准确\n3. 语言简洁清晰\n4. 按重要性排序\n5. 总结长度控制在300字以内\n\n内容如下：\ncmake_minimum_required(VERSION 3.15)\n\nfind_package(Threads REQUIRED)\n\nif (ENABLE_SSL_TESTS)\n    add_library(test_server STATIC\n                abstractServer.cpp\n                httpServer.cpp\n                httpsServer.cpp)\nelse ()\n    add_library(test_server STATIC\n                abstractServer.cpp\n                httpServer.cpp)\nendif()\nif(WIN32)\n    target_link_libraries(test_server PRIVATE Threads::Threads cpr::cpr GTest::GTest\n                                      PUBLIC mongoose ws2_32 wsock32)\nelse()\n    target_link_libraries(test_server PRIVATE Threads::Threads cpr::cpr GTest::GTest\n                                      PUBLIC mongoose)\nendif()\n\nmacro(add_cpr_test _TEST_NAME)\n    add_executable(${_TEST_NAME}_tests ${_TEST_NAME}_tests.cpp)\n    target_link_libraries(${_TEST_NAME}_tests PRIVATE\n        test_server\n        GTest::GTest\n        cpr::cpr\n        CURL::libcurl)\n    add_test(NAME cpr_${_TEST_NAME}_tests COMMAND ${_TEST_NAME}_tests)\n    # Group under the "tests" project folder in IDEs such as Visual Studio.\n    set_property(TARGET ${_TEST_NAME}_tests PROPERTY FOLDER "tests")\n    if(WIN32 AND BUILD_SHARED_LIBS)\n        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libcurl> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)\n        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:cpr> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)\n    endif()\nendmacro()\n\nadd_cpr_test(get)\nadd_cpr_test(post)\nadd_cpr_test(session)\nadd_cpr_test(prepare)\nadd_cpr_test(async)\nadd_cpr_test(proxy)\nadd_cpr_test(head)\nadd_cpr_test(delete)\nadd_cpr_test(put)\nadd_cpr_test(callback)\nadd_cpr_test(raw_body)\nadd_cpr_test(options)\nadd_cpr_test(patch)\nadd_cpr_test(error)\nadd_cpr_test(alternating)\nadd_cpr_test(util)\nadd_cpr_test(structures)\nadd_cpr_test(encoded_auth)\nadd_cpr_test(proxy_auth)\nadd_cpr_test(version)\nadd_cpr_test(download)\n\nif (ENABLE_SSL_TESTS)\n    add_cpr_test(ssl)\n    \n    # Install all ssl keys and certs:\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:ssl_tests>/data)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.pubkey $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.key $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.cer $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/client.key $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/client.cer $<TARGET_FILE_DIR:ssl_tests>)\nendif()\n\n'}]}}
+[2025-01-28 00:35:31,425: DEBUG/MainProcess] Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+[2025-01-28 00:35:42,633: DEBUG/MainProcess] https://dashscope.aliyuncs.com:443 "POST /api/v1/services/aigc/text-generation/generation HTTP/1.1" 200 None
+[2025-01-28 00:35:42,634: DEBUG/MainProcess] Response: {'output': {'choices': [{'finish_reason': 'stop', 'message': {'role': 'assistant', 'content': '该CMake脚本主要定义了一个测试服务器库和一系列cpr库的测试用例。核心要点如下：\n\n1. **项目配置**：要求最低CMake版本为3.15，并查找线程支持。\n2. **构建测试服务器库**：\n   - 根据`ENABLE_SSL_TESTS`标志决定是否包含HTTPS服务器代码。\n   - 在Windows平台上，链接额外的库（如`ws2_32`和`wsock32`）。\n3. **定义宏`add_cpr_test`**：用于创建并配置多个cpr库的测试用例，包括编译、链接、添加测试命令及在IDE中设置文件夹属性。\n4. **具体测试用例**：通过调用`add_cpr_test`宏，为各种HTTP方法（如GET, POST等）及其他功能（如异步请求、代理支持等）生成测试。\n5. **SSL测试支持**：如果启用了SSL测试，则会添加一个专门针对SSL的测试用例，并在构建后复制相关的证书和密钥文件到目标目录。\n\n此脚本展示了如何使用CMake来组织和管理复杂的多平台测试环境。'}}]}, 'usage': {'prompt_tokens_details': {'cached_tokens': 0}, 'total_tokens': 1079, 'output_tokens': 250, 'input_tokens': 829}, 'request_id': '3608ab70-5707-95cc-98be-fd6b39e8c884'}
+[2025-01-28 00:35:42,635: INFO/MainProcess] Received response from Ali API with status code: 200
+[2025-01-28 00:35:42,636: INFO/MainProcess] Successfully generated summary with length: 445
+[2025-01-28 00:35:42,637: INFO/MainProcess] Task 528003fa-2831-4e3d-ba05-714dd1bbb68b completed successfully with summary length: 512
+[2025-01-28 00:35:42,641: INFO/MainProcess] Cleaned up file: uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt
+[2025-01-28 00:35:42,643: INFO/MainProcess] Task app.core.tasks.process_and_summarize[528003fa-2831-4e3d-ba05-714dd1bbb68b] succeeded in 11.233115681003255s: {'status': 'success', 'summary': '文件 uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt 摘要:
+该CMake脚本主要定义了一个测试服务器库和一系列cpr库的测试用例。核心要点如下：
+
+1. **项目配置**：要求最低CMake版本为3.15，并查找线程支持。
+2. **构建测试服务器库**：
+   - 根据`ENABLE_SSL_TESTS`标志决定是否包含HTTPS服务器代码。
+   - 在Windows平台上，链接额外的库（如`ws2_32`和`wsock32`）。
+3. **定义宏`add_cpr_test`**：用于创建并配置多个cpr库的测试用例，包括编译、链接、添加测试命令及在IDE中设置文件夹属性。
+4. **具体测试用例**：通过调用`add_cpr_test`宏，为各种HTTP方法（如GET, POST等）及其他功能（如异步请求、代理支持等）生成测试。
+5. **SSL测试支持**：如果启用了SSL测试，则会添加一个专门针对SSL的测试用例，并在构建后复制相关的证书和密钥文件到目标目录。
+
+此脚本展示了如何使用CMake来组织和管理复杂的多平台测试环境。'}
+[2025-01-28 00:35:42,644: INFO/MainProcess] missed heartbeat from worker1@LAPTOP-23FI8VL8
+[2025-01-28 00:35:42,645: DEBUG/MainProcess] worker1@LAPTOP-23FI8VL8 joined the party
