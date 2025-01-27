@@ -145,19 +145,16 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import Quill from 'quill'
 import Uppy from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import '@uppy/core/dist/style.css'
 import '@uppy/dashboard/dist/style.css'
-import 'quill/dist/quill.snow.css'
 import { mockSummaryService } from '../mock/summaryService'
 import { config } from '../config'
 import { useRouter } from 'vue-router'
 
-const quill = ref(null)
 const uppy = ref(null)
-const summaryResult = ref('')
+const summary = ref('')
 const isProcessing = ref(false)
 const urlInput = ref('')
 const urls = ref([''])
@@ -165,14 +162,8 @@ const texts = ref([''])
 const loading = ref(false)
 const showCopyTip = ref(false)
 const router = useRouter()
-
-// 添加联系方式相关的状态
 const showContact = ref(false)
-
-// 计算是否有内容输入
-const hasContent = computed(() => {
-  return quill.value && quill.value.getText().trim().length > 0
-})
+const uploadedFiles = ref([])
 
 // 计算是否有文件上传
 const hasFiles = computed(() => {
@@ -181,9 +172,9 @@ const hasFiles = computed(() => {
 
 // 格式化后的摘要内容
 const formattedSummary = computed(() => {
-  if (!summaryResult.value) return ''
+  if (!summary.value) return ''
   // 将换行符转换为HTML换行，保持格式
-  return summaryResult.value.replace(/\n/g, '<br>')
+  return summary.value.replace(/\n/g, '<br>')
 })
 
 // 修改计算属性，检查是否有任何输入
@@ -197,14 +188,8 @@ const hasInput = computed(() => {
   // 检查文本输入
   const hasTexts = texts.value.some(text => text.trim() !== '')
   
-  // 检查文件上传 - 修改这里的逻辑
-  const files = uppy.value?.getFiles() || []
-  const hasUploadedFiles = files.length > 0
-  
-  // 调试输出
-  console.log('URLs:', hasUrls)
-  console.log('Texts:', hasTexts)
-  console.log('Files:', hasUploadedFiles, files)
+  // 检查文件上传 - 使用响应式引用
+  const hasUploadedFiles = uploadedFiles.value.length > 0
   
   return hasUrls || hasTexts || hasUploadedFiles
 })
@@ -252,7 +237,7 @@ const allowedFileTypes = {
 // 复制结果
 const copyResult = async () => {
   try {
-    await navigator.clipboard.writeText(summaryResult.value)
+    await navigator.clipboard.writeText(summary.value)
     alert('已复制到剪贴板')
   } catch (err) {
     console.error('复制失败:', err)
@@ -266,12 +251,12 @@ const shareResult = async () => {
     if (navigator.share) {
       await navigator.share({
         title: 'AnythingSummary - 内容总结',
-        text: summaryResult.value,
+        text: summary.value,
         url: window.location.href
       })
     } else {
       // 如果不支持原生分享，创建分享链接
-      const shareUrl = `${window.location.origin}/share?summary=${encodeURIComponent(summaryResult.value)}`
+      const shareUrl = `${window.location.origin}/share?summary=${encodeURIComponent(summary.value)}`
       await navigator.clipboard.writeText(shareUrl)
       alert('分享链接已复制到剪贴板')
     }
@@ -283,7 +268,7 @@ const shareResult = async () => {
 
 // 下载结果
 const downloadResult = () => {
-  const blob = new Blob([summaryResult.value], { type: 'text/plain' })
+  const blob = new Blob([summary.value], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
@@ -295,112 +280,130 @@ const downloadResult = () => {
 }
 
 onMounted(() => {
-  // 初始化Quill编辑器
-  quill.value = new Quill('#editor', {
-    theme: 'snow',
-    placeholder: '请输入需要总结的文本...',
-    modules: {
-      toolbar: [
-        ['bold', 'italic', 'underline'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['clean']
-      ]
-    }
-  })
-
   // 初始化Uppy上传组件
   uppy.value = new Uppy({
     restrictions: {
-      maxFileSize: 100 * 1024 * 1024, // 最大100MB
+      maxFileSize: 100 * 1024 * 1024,
       maxNumberOfFiles: 5,
       allowedFileTypes: Object.keys(allowedFileTypes)
     }
   })
-    .use(Dashboard, {
-      target: '#uppy',
-      inline: true,
-      height: 250,
-      width: '100%',
-      hideUploadButton: true,
-      proudlyDisplayPoweredByUppy: false,
-      locale: {
-        strings: {
-          dropPasteFiles: '拖拽文件到这里，或者 %{browse}',
-          browse: '选择文件',
-          uploadComplete: '上传完成',
-          uploadFailed: '上传失败',
-          dataUploadXFiles: '已选择 %{smart_count} 个文件',
-          dropPaste: '拖拽文件到这里，或者 %{browse}'
-        }
+  .use(Dashboard, {
+    target: '#uppy',
+    inline: true,
+    height: 250,
+    width: '100%',
+    hideUploadButton: true,
+    proudlyDisplayPoweredByUppy: false,
+    locale: {
+      strings: {
+        dropPasteFiles: '拖拽文件到这里，或者 %{browse}',
+        browse: '选择文件',
+        uploadComplete: '上传完成',
+        uploadFailed: '上传失败',
+        dataUploadXFiles: '已选择 %{smart_count} 个文件',
+        dropPaste: '拖拽文件到这里，或者 %{browse}'
       }
-    })
-    
-  // 文件类型验证
+    }
+  })
+  
+  // 监听文件添加事件
   uppy.value.on('file-added', (file) => {
     const fileType = file.type
     if (!Object.keys(allowedFileTypes).includes(fileType)) {
       uppy.value.removeFile(file.id)
       alert(`不支持的文件类型！\n支持的格式：${Object.values(allowedFileTypes).join(', ')}`)
+    } else {
+      // 更新响应式文件列表
+      uploadedFiles.value = uppy.value.getFiles()
     }
+  })
+
+  // 监听文件移除事件
+  uppy.value.on('file-removed', () => {
+    // 更新响应式文件列表
+    uploadedFiles.value = uppy.value.getFiles()
   })
 })
 
 // 提交处理函数
 const handleSubmit = async () => {
   try {
-    loading.value = true
+    // 验证是否有内容需要处理
+    if (!hasInput.value) {
+      alert('请至少输入一项需要总结的内容（文本、URL或文件）');
+      return;
+    }
+
+    loading.value = true;
+    const formData = new FormData();
     
-    // 获取编辑器内容
-    const textContent = quill.value.root.innerHTML
-    
-    // 获取上传的文件
-    const files = uppy.value.getFiles()
-    
-    // 创建FormData对象
-    const formData = new FormData()
-    
-    // 添加文本内容
-    if (textContent.trim()) {
-      formData.append('text', textContent)
+    // 添加文件
+    if (uploadedFiles.value.length > 0) {
+      uploadedFiles.value.forEach(file => {
+        formData.append('files', file.data);  // 注意这里改为 'files'
+      });
     }
     
     // 添加URL
-    urls.value.forEach((url, index) => {
-      if (url.trim()) {
-        formData.append(`urls[${index}]`, url.trim())
-      }
-    })
+    const validUrls = urls.value.filter(url => url.trim() && isValidUrl(url.trim()));
+    if (validUrls.length > 0) {
+      formData.append('urls', validUrls.join(','));
+    }
     
-    // 添加文本内容
-    texts.value.forEach((text, index) => {
-      if (text.trim()) {
-        formData.append(`texts[${index}]`, text.trim())
-      }
-    })
-    
-    // 添加文件到FormData
-    files.forEach(file => {
-      formData.append('files', file.data)
-    })
-
-    let data;
-    if (config.useMockService) {
-      data = await mockSummaryService(formData);
-    } else {
-      const response = await fetch(`${config.apiBaseUrl}/summary`, {
-        method: 'POST',
-        body: formData
-      });
-      data = await response.json();
+    // 添加文本
+    const validTexts = texts.value.filter(text => text.trim());
+    if (validTexts.length > 0) {
+      formData.append('texts', validTexts.join('\n\n'));
     }
 
-    summaryResult.value = data.summary;
+    console.log('Sending request with content:');
+    console.log('- Files:', uploadedFiles.value.length);
+    console.log('- URLs:', validUrls.length);
+    console.log('- Texts:', validTexts.length);
+
+    const response = await fetch(`${config.apiBaseUrl}/summary`, {
+      method: 'POST',
+      body: formData
+    });
     
+    const data = await response.json();
+    console.log('Response data:', data);
+
+    if (data.success) {
+      pollTaskStatus(data.task_id);
+    } else {
+      throw new Error(data.error || '处理失败');
+    }
   } catch (error) {
-    console.error('处理失败:', error)
-    alert('处理失败，请重试')
-  } finally {
+    console.error('处理失败:', error);
+    alert(error.message || '处理失败，请重试');
+  }
+};
+
+// 添加轮询任务状态的函数
+const pollTaskStatus = async (taskId) => {
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/summary/${taskId}`)
+    const data = await response.json()
+    
+    if (data.status === 'completed') {
+      summary.value = data.result.summary
+      loading.value = false
+    } else if (data.status === 'processing') {
+      // 继续轮询
+      setTimeout(() => pollTaskStatus(taskId), 1000)
+    } else if (data.status === 'error') {
+      loading.value = false
+      throw new Error(data.error || '处理失败')
+    } else {
+      loading.value = false
+      throw new Error('未知状态：' + data.status)
+    }
+  } catch (error) {
     loading.value = false
+    console.error('轮询任务状态失败:', error)
+    alert(error.message || '处理失败，请重试')
   }
 }
 
@@ -439,7 +442,7 @@ const removeText = (index) => {
 
 const copyToClipboard = async () => {
   try {
-    await navigator.clipboard.writeText(summaryResult.value)
+    await navigator.clipboard.writeText(summary.value)
     showCopyTip.value = true
     setTimeout(() => {
       showCopyTip.value = false
@@ -451,7 +454,7 @@ const copyToClipboard = async () => {
 }
 
 const downloadTxt = () => {
-  const blob = new Blob([summaryResult.value], { type: 'text/plain' })
+  const blob = new Blob([summary.value], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
