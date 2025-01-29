@@ -2,23 +2,13 @@
   <div class="page-container">
     <!-- 顶部区域 -->
     <div class="top-section">
-      <!-- 产品描述 -->
+      <!-- 左侧标题和描述 -->
       <div class="product-intro">
         <h1>
           <span class="logo">🎯</span> 
           Anything Summary
+          <span class="subtitle">一站式智能内容总结工具，支持多模态混合输入</span>
         </h1>
-        <p class="intro-text">
-          一站式智能内容总结工具
-          <span class="feature-list">
-            <span class="feature">📝 文本</span>
-            <span class="feature">🔗 网页</span>
-            <span class="feature">📄 文档</span>
-            <span class="feature">🎵 音频</span>
-            <span class="feature">🎬 视频</span>
-            <span class="feature">📦 压缩包</span>
-          </span>
-        </p>
       </div>
 
       <!-- 右侧按钮组 -->
@@ -36,21 +26,30 @@
     <div class="main-content">
       <!-- 左侧输入区域 -->
       <div class="input-section">
-        <h2>输入区域</h2>
+        <!-- 功能类型指示器 -->
+        <div class="feature-list">
+          <span class="feature"><i class="fas fa-file-alt"></i>📝 文本</span>
+          <span class="feature"><i class="fas fa-link"></i>🔗 网页</span>
+          <span class="feature"><i class="fas fa-file-pdf"></i>📄 文档</span>
+          <span class="feature"><i class="fas fa-music"></i>🎵 音频</span>
+          <span class="feature"><i class="fas fa-video"></i>🎬 视频</span>
+          <span class="feature"><i class="fas fa-file-archive"></i>📦 压缩包</span>
+        </div>
         
         <!-- URL输入区 -->
         <div class="url-inputs">
-          <h3>网页链接 ({{ urls.length }}个)</h3>
           <div v-for="(url, index) in urls" :key="'url-'+index" class="url-input-group">
-            <input 
-              v-model="urls[index]" 
-              type="text" 
-              class="form-input"
-              placeholder="请输入网页链接"
-            >
-            <button @click="removeUrl(index)" class="remove-btn" v-if="urls.length > 1">
-              <i class="fas fa-times"></i>
-            </button>
+            <div class="input-wrapper">
+              <input 
+                v-model="urls[index]" 
+                type="text" 
+                class="form-input"
+                placeholder="输入网页链接"
+              >
+              <button @click="removeUrl(index)" class="remove-btn" v-if="urls.length > 1" title="删除">
+                ×
+              </button>
+            </div>
           </div>
           <button @click="addUrl" class="add-btn">
             <i class="fas fa-plus"></i> 添加链接
@@ -59,17 +58,18 @@
 
         <!-- 文本输入区 -->
         <div class="text-inputs">
-          <h3>文本内容 ({{ texts.length }}个)</h3>
           <div v-for="(text, index) in texts" :key="'text-'+index" class="text-input-group">
-            <textarea 
-              v-model="texts[index]" 
-              class="form-input"
-              placeholder="请输入文本内容"
-              rows="4"
-            ></textarea>
-            <button @click="removeText(index)" class="remove-btn" v-if="texts.length > 1">
-              <i class="fas fa-times"></i>
-            </button>
+            <div class="input-wrapper">
+              <textarea 
+                v-model="texts[index]" 
+                class="form-input"
+                placeholder="输入或粘贴文本内容"
+                rows="3"
+              ></textarea>
+              <button @click="removeText(index)" class="remove-btn" v-if="texts.length > 1" title="删除">
+                ×
+              </button>
+            </div>
           </div>
           <button @click="addText" class="add-btn">
             <i class="fas fa-plus"></i> 添加文本
@@ -78,26 +78,16 @@
 
         <!-- 文件上传区域 -->
         <div class="file-upload">
-          <h3>文件上传</h3>
           <div id="uppy"></div>
-          <p class="file-hint">
-            支持的文件类型：<br>
-            文档：PDF、Word、TXT<br>
-            图片：JPG、PNG、GIF、WEBP、BMP、SVG<br>
-            音频：MP3、WAV、OGG、AAC、M4A、FLAC<br>
-            视频：MP4、WEBM、OGV、MOV、AVI、MKV<br>
-            (单个文件最大100MB)
-          </p>
         </div>
 
         <button @click="handleSubmit" class="submit-btn" :disabled="!hasInput">
-          开始总结
+          一键总结
         </button>
       </div>
 
       <!-- 右侧输出区域 -->
       <div class="output-section">
-        <h2>总结结果</h2>
         <div class="result-container">
           <div v-if="loading" class="loading">
             正在生成总结...
@@ -108,15 +98,23 @@
               <button @click="copyToClipboard" class="action-btn">
                 <i class="fas fa-copy"></i> 复制
               </button>
-              <button @click="downloadTxt" class="action-btn">
+              <button @click="downloadSummary" class="action-btn">
                 <i class="fas fa-download"></i> 下载
-              </button>
-              <button @click="regenerate" class="action-btn">
-                <i class="fas fa-sync"></i> 重新生成
               </button>
             </div>
           </div>
+          <div v-else class="empty-state">
+            在左侧输入内容，点击"一键总结"生成摘要
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 添加结果显示区域的样式 -->
+    <div v-if="summary" class="result-section">
+      <h2>处理结果</h2>
+      <div class="summary-content">
+        <pre>{{ summary }}</pre>
       </div>
     </div>
   </div>
@@ -150,7 +148,7 @@ import Dashboard from '@uppy/dashboard'
 import '@uppy/core/dist/style.css'
 import '@uppy/dashboard/dist/style.css'
 import { mockSummaryService } from '../mock/summaryService'
-import { config } from '../config'
+import { config } from '../config.ts'
 import { useRouter } from 'vue-router'
 
 const uppy = ref(null)
@@ -329,83 +327,96 @@ onMounted(() => {
 // 提交处理函数
 const handleSubmit = async () => {
   try {
-    // 验证是否有内容需要处理
-    if (!hasInput.value) {
-      alert('请至少输入一项需要总结的内容（文本、URL或文件）');
-      return;
-    }
-
     loading.value = true;
+    summary.value = '';  // 清空之前的结果
+    
     const formData = new FormData();
     
     // 添加文件
     if (uploadedFiles.value.length > 0) {
       uploadedFiles.value.forEach(file => {
-        formData.append('files', file.data);  // 注意这里改为 'files'
+        formData.append('files', file.data);
       });
     }
     
-    // 添加URL
-    const validUrls = urls.value.filter(url => url.trim() && isValidUrl(url.trim()));
-    if (validUrls.length > 0) {
-      formData.append('urls', validUrls.join(','));
+    // 添加文本
+    if (texts.value[0]?.trim()) {
+      formData.append('text', texts.value[0]);
     }
     
-    // 添加文本
-    const validTexts = texts.value.filter(text => text.trim());
-    if (validTexts.length > 0) {
-      formData.append('texts', validTexts.join('\n\n'));
+    // 添加URL
+    if (urls.value[0]?.trim()) {
+      formData.append('url', urls.value[0]);
     }
 
-    console.log('Sending request with content:');
-    console.log('- Files:', uploadedFiles.value.length);
-    console.log('- URLs:', validUrls.length);
-    console.log('- Texts:', validTexts.length);
-
-    const response = await fetch(`${config.apiBaseUrl}/summary`, {
+    // 打印请求信息
+    console.log('Sending request to:', `${config.API_BASE_URL}/summary`);
+    
+    const response = await fetch(`${config.API_BASE_URL}/summary`, {
       method: 'POST',
       body: formData
     });
-    
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
     const data = await response.json();
-    console.log('Response data:', data);
-
-    if (data.success) {
-      pollTaskStatus(data.task_id);
-    } else {
-      throw new Error(data.error || '处理失败');
-    }
-  } catch (error) {
-    console.error('处理失败:', error);
-    alert(error.message || '处理失败，请重试');
-  }
-};
-
-// 添加轮询任务状态的函数
-const pollTaskStatus = async (taskId) => {
-  try {
-    const response = await fetch(`${config.apiBaseUrl}/summary/${taskId}`)
-    const data = await response.json()
+    console.log('Submit response:', data);  // 添加日志
     
-    if (data.status === 'completed') {
-      summary.value = data.result.summary
-      loading.value = false
-    } else if (data.status === 'processing') {
-      // 继续轮询
-      setTimeout(() => pollTaskStatus(taskId), 1000)
-    } else if (data.status === 'error') {
-      loading.value = false
-      throw new Error(data.error || '处理失败')
+    if (data.task_id) {
+      await pollTaskStatus(data.task_id);
     } else {
-      loading.value = false
-      throw new Error('未知状态：' + data.status)
+      throw new Error('No task ID received');
     }
   } catch (error) {
-    loading.value = false
-    console.error('轮询任务状态失败:', error)
-    alert(error.message || '处理失败，请重试')
+    console.error('Error:', error);
+    alert(`提交失败: ${error.message}`);
+  } finally {
+    loading.value = false;
   }
 }
+
+const pollTaskStatus = async (taskId) => {
+  try {
+    let retries = 0;
+    const maxRetries = 180;  // 增加到3分钟
+    const interval = 1000;  // 每秒轮询一次
+    
+    while (retries < maxRetries) {
+      const response = await fetch(`${config.API_BASE_URL}/summary/${taskId}`);
+      const data = await response.json();
+      console.log('Poll response:', data);  // 添加日志
+      
+      if (data.status === 'completed') {
+        if (data.result && data.result.summary) {
+          // 处理summary可能是数组的情况
+          summary.value = Array.isArray(data.result.summary) 
+            ? data.result.summary.join('\n\n')  // 如果是数组，用双换行符连接
+            : data.result.summary;
+          console.log('Summary length:', summary.value.length);
+          break;
+        } else {
+          console.error('Invalid result format:', data);
+          throw new Error('无效的结果格式');
+        }
+      } else if (data.status === 'error') {
+        throw new Error(data.error || '处理失败');
+      }
+      
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, interval));
+    }
+    
+    if (retries >= maxRetries) {
+      throw new Error('处理超时，请稍后重试');
+    }
+  } catch (error) {
+    console.error('Error polling task status:', error);
+    throw error;
+  }
+};
 
 // URL格式验证函数
 const isValidUrl = (url) => {
@@ -482,64 +493,40 @@ const showContactInfo = () => {
 
 <style scoped>
 .page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 1rem;
-  gap: 2rem;
 }
 
 .top-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
   margin-bottom: 1rem;
 }
 
 .product-intro {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
-.logo {
-  font-size: 2rem;
-}
-
-.product-intro h1 {
-  font-size: 1.8rem;
-  color: #2196F3;
+h1 {
+  font-size: 1.5rem;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.intro-text {
+.subtitle {
   font-size: 1rem;
-  color: #555;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.feature-list {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.feature {
-  font-size: 0.9rem;
-  padding: 0.25rem 0.75rem;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  color: #666;
+  margin-left: 1rem;
+  font-weight: normal;
 }
 
 .top-buttons {
@@ -550,229 +537,153 @@ const showContactInfo = () => {
 .guide-btn, .contact-btn {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
-  background: white;
 }
 
-.guide-btn {
-  color: #2196F3;
-  border: 1px solid #2196F3;
+.feature-list {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  justify-content: center;
 }
 
-.contact-btn {
-  color: #4CAF50;
-  border: 1px solid #4CAF50;
-}
-
-.guide-btn:hover, .contact-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.guide-btn:hover {
-  background: #2196F3;
-  color: white;
-}
-
-.contact-btn:hover {
-  background: #4CAF50;
-  color: white;
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 .main-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  flex: 1;
 }
 
 .input-section, .output-section {
-  flex: 1;
-  padding: 1.5rem;
-  background: #ffffff;
+  background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.url-inputs, .text-inputs {
-  margin-bottom: 1.5rem;
-}
-
-.url-input-group, .text-input-group {
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .form-input {
   flex: 1;
+  min-width: 0;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-.add-btn, .remove-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
 }
 
-.add-btn {
-  background: #4CAF50;
-  color: white;
-  width: 100%;
-  margin-top: 0.5rem;
-}
-
-.add-btn:hover {
-  background: #45a049;
+.form-input:focus {
+  border-color: #2196F3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
 .remove-btn {
-  background: #ff5252;
-  color: white;
-  padding: 0.75rem;
+  margin-left: 8px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  color: #757575;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 20px;
+  font-weight: 300;
+  padding: 0;
+  line-height: 1;
+  user-select: none;
 }
 
 .remove-btn:hover {
-  background: #ff3939;
+  background: #e0e0e0;
+  color: #424242;
+  border-color: #bdbdbd;
+  transform: scale(1.05);
+}
+
+.remove-btn:active {
+  transform: scale(0.95);
+}
+
+.add-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #f5f5f5;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+  background: #e0e0e0;
+  border-color: #999;
+  color: #333;
+}
+
+.add-btn i {
+  font-size: 0.9rem;
+}
+
+.url-inputs, .text-inputs {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.url-input-group, .text-input-group {
+  width: 100%;
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+  margin-right: 0;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 1rem;
+  padding: 0.75rem;
   background: #2196F3;
   color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.submit-btn:hover {
-  background: #1976D2;
-}
-
-.result-container {
-  min-height: 300px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 1rem;
-}
-
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-}
-
-.summary-result {
-  white-space: pre-wrap;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  justify-content: flex-end;
-}
-
-.action-btn {
-  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.action-btn:nth-child(1) {
-  background: #4CAF50;
-  color: white;
-}
-
-.action-btn:nth-child(2) {
-  background: #2196F3;
-  color: white;
-}
-
-.action-btn:nth-child(3) {
-  background: #FF9800;
-  color: white;
-}
-
-.action-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.copy-tip {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-h3 {
-  margin: 1rem 0;
-  color: #666;
-  font-size: 1.1rem;
-}
-
-.file-upload {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  border: 1px dashed #ddd;
-  border-radius: 4px;
-}
-
-.file-hint {
-  margin-top: 0.5rem;
-  color: #666;
-  font-size: 0.9rem;
-  text-align: left;
-  line-height: 1.5;
-  padding: 0.5rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+  margin-top: 1rem;
 }
 
 .submit-btn:disabled {
@@ -780,45 +691,67 @@ h3 {
   cursor: not-allowed;
 }
 
-.product-intro h1 {
-  font-size: 2.5rem;
-  color: #2196F3;
-  margin-bottom: 1rem;
-  font-weight: bold;
+.result-container {
+  height: 100%;
+  overflow-y: auto;
 }
 
-.intro-text {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.intro-sub {
-  font-size: 1.1rem;
+.empty-state {
   color: #666;
-  font-style: italic;
+  text-align: center;
+  padding: 2rem;
 }
 
-.feature {
-  display: inline-block;
-  margin: 0.25rem;
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.action-btn {
   padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.feature:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .top-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 
-.file-hint::after {
-  content: "压缩包：ZIP、GZ、TAR、RAR、7Z";
-  display: block;
-  margin-top: 0.5rem;
+.result-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.summary-content {
+  max-height: 500px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  background: white;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
 }
 
 /* 联系方式弹窗样式 */
@@ -889,21 +822,25 @@ h3 {
   background: #1976D2;
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
-  .top-section {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
+.copy-tip {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  animation: fadeIn 0.3s ease;
+}
 
-  .feature-list {
-    justify-content: center;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-
-  .top-buttons {
-    width: 100%;
-    justify-content: center;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style> 
