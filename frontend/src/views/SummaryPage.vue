@@ -6,18 +6,22 @@
       <div class="product-intro">
         <h1>
           <span class="logo">🎯</span> 
-          Anything Summary
-          <span class="subtitle">一站式智能内容总结工具，支持多模态混合输入</span>
+          {{ t('app.title') }}
+          <span class="subtitle">{{ t('app.subtitle') }}</span>
         </h1>
       </div>
 
       <!-- 右侧按钮组 -->
       <div class="top-buttons">
+        <!-- 语言切换按钮 -->
+        <button class="lang-btn" @click="toggleLanguage">
+          {{ currentLocale === 'zh' ? 'EN' : '中' }}
+        </button>
         <button class="guide-btn" @click="goToGuide">
-          <i class="fas fa-question-circle"></i> 使用指南
+          <i class="fas fa-question-circle"></i> {{ t('app.guide') }}
         </button>
         <button class="contact-btn" @click="showContactInfo">
-          <i class="fas fa-envelope"></i> 联系我们
+          <i class="fas fa-envelope"></i> {{ t('app.contact') }}
         </button>
       </div>
     </div>
@@ -28,12 +32,12 @@
       <div class="input-section">
         <!-- 功能类型指示器 -->
         <div class="feature-list">
-          <span class="feature"><i class="fas fa-file-alt"></i>📝 文本</span>
-          <span class="feature"><i class="fas fa-link"></i>🔗 网页</span>
-          <span class="feature"><i class="fas fa-file-pdf"></i>📄 文档</span>
-          <span class="feature"><i class="fas fa-music"></i>🎵 音频</span>
-          <span class="feature"><i class="fas fa-video"></i>🎬 视频</span>
-          <span class="feature"><i class="fas fa-file-archive"></i>📦 压缩包</span>
+          <span class="feature">📝 {{ t('features.text') }}</span>
+          <span class="feature">🔗 {{ t('features.webpage') }}</span>
+          <span class="feature">📄 {{ t('features.document') }}</span>
+          <span class="feature">🎵 {{ t('features.audio') }}</span>
+          <span class="feature">🎬 {{ t('features.video') }}</span>
+          <span class="feature">📦 {{ t('features.archive') }}</span>
         </div>
         
         <!-- URL输入区 -->
@@ -44,15 +48,15 @@
                 v-model="urls[index]" 
                 type="text" 
                 class="form-input"
-                placeholder="输入网页链接"
+                :placeholder="t('input.url.placeholder')"
               >
-              <button @click="removeUrl(index)" class="remove-btn" v-if="urls.length > 1" title="删除">
+              <button @click="removeUrl(index)" class="remove-btn" v-if="urls.length > 1" :title="t('input.delete')">
                 ×
               </button>
             </div>
           </div>
           <button @click="addUrl" class="add-btn">
-            <i class="fas fa-plus"></i> 添加链接
+            <i class="fas fa-plus"></i> {{ t('input.url.add') }}
           </button>
         </div>
 
@@ -63,16 +67,16 @@
               <textarea 
                 v-model="texts[index]" 
                 class="form-input"
-                placeholder="输入或粘贴文本内容"
+                :placeholder="t('input.text.placeholder')"
                 rows="3"
               ></textarea>
-              <button @click="removeText(index)" class="remove-btn" v-if="texts.length > 1" title="删除">
+              <button @click="removeText(index)" class="remove-btn" v-if="texts.length > 1" :title="t('input.delete')">
                 ×
               </button>
             </div>
           </div>
           <button @click="addText" class="add-btn">
-            <i class="fas fa-plus"></i> 添加文本
+            <i class="fas fa-plus"></i> {{ t('input.text.add') }}
           </button>
         </div>
 
@@ -82,7 +86,7 @@
         </div>
 
         <button @click="handleSubmit" class="submit-btn" :disabled="!hasInput">
-          一键总结
+          {{ t('actions.submit') }}
         </button>
       </div>
 
@@ -90,21 +94,21 @@
       <div class="output-section">
         <div class="result-container">
           <div v-if="loading" class="loading">
-            正在生成总结...
+            {{ t('status.processing') }}
           </div>
           <div v-else-if="summary" class="summary-result">
             <p>{{ summary }}</p>
             <div class="action-buttons">
               <button @click="copyToClipboard" class="action-btn">
-                <i class="fas fa-copy"></i> 复制
+                <i class="fas fa-copy"></i> {{ t('actions.copy') }}
               </button>
               <button @click="downloadSummary" class="action-btn">
-                <i class="fas fa-download"></i> 下载
+                <i class="fas fa-download"></i> {{ t('actions.download') }}
               </button>
             </div>
           </div>
           <div v-else class="empty-state">
-            在左侧输入内容，点击"一键总结"生成摘要
+            {{ t('status.empty') }}
           </div>
         </div>
       </div>
@@ -122,27 +126,29 @@
   <!-- 联系方式弹窗 -->
   <div v-if="showContact" class="contact-modal">
     <div class="modal-content">
-      <h3>联系我们</h3>
+      <h3>{{ t('contact.title') }}</h3>
       <div class="contact-info">
-        <p><i class="fas fa-envelope"></i> 邮箱：support@anythingsummary.com</p>
-        <p><i class="fab fa-github"></i> GitHub：<a href="https://github.com/yourusername/anything-summary" target="_blank">anything-summary</a></p>
-        <p><i class="fab fa-weixin"></i> 微信公众号：AnythingSummary</p>
+        <p><i class="fas fa-envelope"></i> {{ t('contact.email') }}</p>
+        <p><i class="fab fa-github"></i> {{ t('contact.github') }}</p>
+        <p><i class="fab fa-weixin"></i> {{ t('contact.wechat') }}</p>
       </div>
       <div class="contact-footer">
-        <p class="feedback-text">欢迎反馈问题或建议，帮助我们做得更好！</p>
-        <button class="close-btn" @click="showContact = false">关闭</button>
+        <p class="feedback-text">{{ t('contact.feedback') }}</p>
+        <button class="close-btn" @click="showContact = false">
+          {{ t('contact.close') }}
+        </button>
       </div>
     </div>
   </div>
 
   <!-- 复制成功提示 -->
   <div v-if="showCopyTip" class="copy-tip">
-    复制成功！
+    {{ t('messages.copySuccess') }}
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue'
 import Uppy from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import '@uppy/core/dist/style.css'
@@ -150,6 +156,16 @@ import '@uppy/dashboard/dist/style.css'
 import { mockSummaryService } from '../mock/summaryService'
 import { config } from '../config.ts'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t, locale } = useI18n()
+
+const currentLocale = computed(() => locale.value)
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'zh' ? 'en' : 'zh'
+  localStorage.setItem('locale', locale.value)
+}
 
 const uppy = ref(null)
 const summary = ref('')
@@ -278,31 +294,24 @@ const downloadResult = () => {
 }
 
 onMounted(() => {
-  // 初始化Uppy上传组件
+  // 初始化 Uppy 实例
   uppy.value = new Uppy({
     restrictions: {
       maxFileSize: 100 * 1024 * 1024,
       maxNumberOfFiles: 5,
       allowedFileTypes: Object.keys(allowedFileTypes)
+    },
+    locale: {
+      strings: locale.value === 'zh' ? t('uppy') : undefined
     }
   })
   .use(Dashboard, {
     target: '#uppy',
     inline: true,
-    height: 250,
+    height: 300,
     width: '100%',
     hideUploadButton: true,
-    proudlyDisplayPoweredByUppy: false,
-    locale: {
-      strings: {
-        dropPasteFiles: '拖拽文件到这里，或者 %{browse}',
-        browse: '选择文件',
-        uploadComplete: '上传完成',
-        uploadFailed: '上传失败',
-        dataUploadXFiles: '已选择 %{smart_count} 个文件',
-        dropPaste: '拖拽文件到这里，或者 %{browse}'
-      }
-    }
+    proudlyDisplayPoweredByUppy: false
   })
   
   // 监听文件添加事件
@@ -322,6 +331,17 @@ onMounted(() => {
     // 更新响应式文件列表
     uploadedFiles.value = uppy.value.getFiles()
   })
+})
+
+// 监听语言变化，更新 Uppy 的语言设置
+watch(locale, (newLocale) => {
+  if (uppy.value) {
+    uppy.value.setOptions({
+      locale: {
+        strings: newLocale === 'zh' ? t('uppy') : undefined
+      }
+    })
+  }
 })
 
 // 提交处理函数
@@ -371,8 +391,8 @@ const handleSubmit = async () => {
       throw new Error('No task ID received');
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert(`提交失败: ${error.message}`);
+    console.error('Error:', error)
+    alert(t('messages.processingError'))
   } finally {
     loading.value = false;
   }
@@ -419,7 +439,7 @@ const pollTaskStatus = async (taskId) => {
 };
 
 // URL格式验证函数
-const isValidUrl = (url) => {
+const isValidUrl = (url: string) => {
   try {
     new URL(url);
     return true;
@@ -433,7 +453,7 @@ const addUrl = () => {
   // 检查最后一个URL是否有效
   const lastUrl = urls.value[urls.value.length - 1]
   if (lastUrl && !isValidUrl(lastUrl)) {
-    alert('请输入有效的URL地址，例如: https://www.example.com')
+    alert(t('input.url.invalid'))
     return
   }
   urls.value.push('')
@@ -460,7 +480,7 @@ const copyToClipboard = async () => {
     }, 2000)
   } catch (err) {
     console.error('复制失败:', err)
-    alert('复制失败，请手动复制')
+    alert(t('messages.copyFailed'))
   }
 }
 
@@ -842,5 +862,21 @@ pre {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* 添加语言切换按钮样式 */
+.lang-btn {
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
 }
 </style> 

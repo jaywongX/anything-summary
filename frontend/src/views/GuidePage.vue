@@ -1,87 +1,69 @@
 <template>
   <div class="guide-container">
-    <h1>如何使用 AnythingSummary</h1>
+    <h1>{{ t('guide.title') }}</h1>
     
     <div class="guide-section">
-      <h2>1. 输入内容</h2>
-      <p>您可以通过以下三种方式输入需要总结的内容（支持同时使用多种方式）：</p>
-      
+      <h2>{{ t('guide.sections.input.title') }}</h2>
       <div class="guide-item">
-        <h3>📝 文本输入</h3>
         <ul>
-          <li>直接在文本框中输入或粘贴文字</li>
-          <li>点击"添加文本"可以增加多个文本输入框</li>
-          <li>每个文本框右侧的删除按钮可以移除不需要的输入框</li>
+          <li>{{ t('guide.sections.input.text') }}</li>
+          <li>{{ t('guide.sections.input.url') }}</li>
+          <li>{{ t('guide.sections.input.file') }}</li>
         </ul>
       </div>
       
+      <h2>{{ t('guide.sections.formats.title') }}</h2>
       <div class="guide-item">
-        <h3>🔗 网页链接</h3>
         <ul>
-          <li>输入需要总结的网页URL</li>
-          <li>支持添加多个网页链接</li>
-          <li>系统会自动提取网页中的主要内容</li>
-        </ul>
-      </div>
-      
-      <div class="guide-item">
-        <h3>📁 文件上传</h3>
-        <ul>
-          <li>支持多种文件格式：
-            <ul>
-              <li>文档：PDF、Word、TXT</li>
-              <li>图片：JPG、PNG、GIF等（支持OCR文字识别）</li>
-              <li>音频：MP3、WAV等（支持语音转文字）</li>
-              <li>视频：MP4、AVI等（支持提取音频进行转写）</li>
-              <li>压缩包：ZIP、GZ、TAR、RAR、7Z（自动解压并处理内容）</li>
-            </ul>
-          </li>
-          <li>单个文件最大支持100MB</li>
-          <li>可以同时上传多个文件（最多5个）</li>
+          <li>{{ t('guide.sections.formats.docs') }}</li>
+          <li>{{ t('guide.sections.formats.images') }}</li>
+          <li>{{ t('guide.sections.formats.audio') }}</li>
+          <li>{{ t('guide.sections.formats.video') }}</li>
+          <li>{{ t('guide.sections.formats.archive') }}</li>
         </ul>
       </div>
     </div>
 
     <div class="guide-section">
-      <h2>2. 生成总结</h2>
+      <h2>{{ t('guide.sections.process.title') }}</h2>
       <ul>
-        <li>确保至少输入了一种内容（文本、链接或文件）</li>
-        <li>点击"开始总结"按钮</li>
-        <li>等待系统处理（处理时间取决于内容长度和类型）</li>
+        <li>{{ t('guide.sections.process.step1') }}</li>
+        <li>{{ t('guide.sections.process.step2') }}</li>
+        <li>{{ t('guide.sections.process.step3') }}</li>
       </ul>
     </div>
 
     <div class="guide-section">
-      <h2>3. 结果处理</h2>
-      <p>获得总结结果后，您可以：</p>
+      <h2>{{ t('guide.sections.results.title') }}</h2>
+      <p>{{ t('guide.sections.results.description') }}</p>
       <ul>
-        <li>复制：一键复制总结内容到剪贴板</li>
-        <li>下载：将总结内容保存为TXT文件</li>
-        <li>重新生成：如果结果不理想，可以重新生成总结</li>
+        <li>{{ t('guide.sections.results.copy') }}</li>
+        <li>{{ t('guide.sections.results.download') }}</li>
+        <li>{{ t('guide.sections.results.regenerate') }}</li>
       </ul>
     </div>
 
     <div class="guide-section">
-      <h2>使用建议</h2>
+      <h2>{{ t('guide.sections.tips.title') }}</h2>
       <ul>
-        <li>输入内容越清晰准确，生成的总结质量越高</li>
-        <li>对于长文本，建议分段输入以获得更好的效果</li>
-        <li>如果上传文件，请确保文件质量良好（如图片清晰、音频清楚等）</li>
+        <li>{{ t('guide.sections.tips.quality') }}</li>
+        <li>{{ t('guide.sections.tips.length') }}</li>
+        <li>{{ t('guide.sections.tips.files') }}</li>
       </ul>
     </div>
 
-    <button class="back-btn" @click="goBack">返回主页</button>
+    <button class="back-btn" @click="router.push('/')">
+      <i class="fas fa-arrow-left"></i> {{ t('app.title') }}
+    </button>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
-
-const goBack = () => {
-  router.push('/')
-}
+const { t } = useI18n()
 </script>
 
 <style scoped>
