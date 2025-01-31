@@ -62,66 +62,36 @@ async def create_summary(
         )
 
 @router.get("/summary/{task_id}")
-async def get_summary_status(task_id: str):
-    """获取任务状态"""
+async def get_summary(task_id: str):
     try:
-        task_result = AsyncResult(task_id, app=celery_app)
-        logger.debug(f"Task {task_id} state: {task_result.state}")
+        task = AsyncResult(task_id)
+        logger.debug(f"Task {task_id} state: {task.state}")
         
-        # 尝试从 Redis 直接获取结果
-        try:
-            result = celery_app.backend.get_task_meta(task_id)
-            logger.debug(f"Redis result for task {task_id}: {result}")
+        if task.state == 'PENDING':
+            return {"status": "pending"}
             
-            if result and result.get('status') == 'SUCCESS':
-                task_result = result.get('result', {})
-                if isinstance(task_result, dict) and task_result.get('status') == 'success':
-                    return {
-                        "status": "success",
-                        "result": {
-                            "summary": task_result.get('summary', '')
-                        }
-                    }
-        except Exception as e:
-            logger.warning(f"Error getting result from Redis: {e}")
+        result = task.result
+        logger.debug(f"Task result: {result}")
         
-        # 检查任务状态
-        if task_result.state == 'SUCCESS':
-            result = task_result.get()
-            if isinstance(result, dict) and result.get('status') == 'success':
-                return {
-                    "status": "success",
-                    "result": {
-                        "summary": result.get('summary', '')
-                    }
-                }
-            else:
+        if isinstance(result, dict):
+            if result.get('status') == 'error':
                 return {
                     "status": "error",
                     "error": result.get('error', 'Unknown error')
                 }
-        elif task_result.state == 'FAILURE':
-            error = str(task_result.result)
-            logger.error(f"Task {task_id} failed: {error}")
-            return {
-                "status": "error",
-                "error": error
-            }
-        elif task_result.state == 'PENDING':
-            # 检查任务是否真的存在
-            if not celery_app.backend.get_task_meta(task_id):
-                return {
-                    "status": "error",
-                    "error": "Task not found"
-                }
-        
-        return {"status": "processing"}
-            
-    except Exception as e:
-        logger.error(f"Error checking task status: {str(e)}", exc_info=True)
+            elif result.get('status') == 'success':
+                return result
+                
         return {
             "status": "error",
-            "error": str(e)
+            "error": "Invalid task result format"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error checking task status: {e}", exc_info=True)
+        return {
+            "status": "error",
+            "error": f"Error checking task status: {str(e)}"
         }
 
 @router.get("/celery/status")

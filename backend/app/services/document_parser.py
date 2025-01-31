@@ -6,15 +6,47 @@ import fitz  # PyMuPDF
 import io
 import os
 import logging
-from typing import Optional
+from typing import Optional, Dict, Any
 import PyPDF2
 import sys
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, urljoin
+import time
+import re
+import html
+from requests.exceptions import RequestException, Timeout
+import json
+import hashlib
+from datetime import datetime
+import bleach
+import validators
+import mimetypes
+import youtube_dl
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 logger = logging.getLogger(__name__)
 
 class DocumentParser:
+    # 敏感词列表（示例）
+    SENSITIVE_WORDS = {
+        'spam', 'scam', 'hack', 'crack',
+        # 添加其他敏感词
+    }
+    
+    # 广告相关标识
+    AD_PATTERNS = [
+        r'advertisement',
+        r'sponsored',
+        r'promotion',
+        r'ads-container',
+        r'banner-ads',
+    ]
+
     def __init__(self):
         self._check_dependencies()
+        self.session = self._create_session()
         
     def _check_dependencies(self):
         """检查必要的依赖是否已安装"""
@@ -72,7 +104,7 @@ class DocumentParser:
                 return self._parse_docx(file_path)
             elif file_extension == 'txt':
                 return self._parse_txt(file_path)
-            elif file_extension in ['.png', '.jpg', '.jpeg', '.bmp', '.tiff']:
+            elif file_extension in ['png', 'jpg', 'jpeg', 'bmp', 'tiff']:
                 return self.parse_image(file_path)
             else:
                 logger.warning(f"Unsupported file type: {file_extension}")
@@ -245,3 +277,198 @@ class DocumentParser:
         img = enhancer.enhance(1.5)
         
         return np.array(img) 
+
+    def _create_session(self) -> requests.Session:
+        """创建具有重试机制的会话"""
+        session = requests.Session()
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
+
+    def parse_url(self, url: str) -> Optional[str]:
+        """从 URL 解析内容"""
+        try:
+            logger.info(f"Starting to parse URL: {url}")
+            
+            # URL验证
+            if not self._validate_url(url):
+                raise ValueError("Invalid URL format or potentially dangerous URL")
+            
+            # 获取响应
+            response = self._get_response(url)
+            
+            # 解析内容
+            content = self._parse_web_content(response)
+            
+            # 内容过滤和清理
+            content = self._filter_content(content)
+            
+            # 返回处理后的文本
+            return content
+            
+        except Exception as e:
+            self._handle_error(e)
+            return None
+
+    def _validate_url(self, url: str) -> bool:
+        """验证URL"""
+        if not validators.url(url):
+            return False
+            
+        parsed_url = urlparse(url)
+        
+        # 检查协议
+        if parsed_url.scheme not in ['http', 'https']:
+            return False
+            
+        # 检查危险域名（示例）
+        dangerous_domains = {'example.com', 'malicious.com'}
+        if parsed_url.netloc in dangerous_domains:
+            return False
+            
+        return True
+
+    def _get_response(self, url: str) -> requests.Response:
+        """获取URL响应"""
+        try:
+            # 通用请求头
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Cache-Control': 'max-age=0'
+            }
+            
+            response = self.session.get(
+                url,
+                headers=headers,
+                timeout=30,
+                allow_redirects=True,
+                verify=True
+            )
+            
+            # 检查状态码
+            if response.status_code == 403:
+                raise ValueError(f"访问被拒绝 (HTTP 403)，该网页可能需要登录或不允许访问")
+            elif response.status_code == 404:
+                raise ValueError(f"页面未找到 (HTTP 404)")
+            elif response.status_code == 429:
+                raise ValueError(f"请求过于频繁 (HTTP 429)，请稍后再试")
+            elif response.status_code >= 400:
+                raise ValueError(f"请求失败，HTTP状态码: {response.status_code}")
+            
+            response.raise_for_status()
+            
+            # 检查内容类型
+            content_type = response.headers.get('content-type', '').lower()
+            if not any(t in content_type for t in ['text/html', 'application/json', 'text/plain']):
+                raise ValueError(f"不支持的内容类型: {content_type}")
+            
+            return response
+            
+        except requests.Timeout:
+            raise ValueError("请求超时，请检查网络连接或稍后重试")
+        except requests.ConnectionError:
+            raise ValueError("网络连接错误，请检查网络连接")
+        except requests.TooManyRedirects:
+            raise ValueError("重定向次数过多，可能是无效的URL")
+        except requests.HTTPError as e:
+            raise ValueError(f"HTTP请求错误: {str(e)}")
+        except Exception as e:
+            raise ValueError(f"请求失败: {str(e)}")
+
+    def _parse_web_content(self, response: requests.Response) -> str:
+        """解析网页内容"""
+        # 检测编码
+        response.encoding = response.apparent_encoding
+        
+        # 使用 BeautifulSoup 解析 HTML
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # 移除不需要的元素
+        for element in soup(["script", "style", "meta", "link", "noscript", "header", "footer", "nav"]):
+            element.decompose()
+        
+        # 获取主要内容
+        main_content = (
+            soup.find('main') or 
+            soup.find('article') or 
+            soup.find('div', class_='content') or 
+            soup
+        )
+        
+        # 获取文本内容
+        text = main_content.get_text(separator='\n', strip=True)
+        
+        # 清理文本
+        lines = []
+        for line in text.splitlines():
+            line = line.strip()
+            if line and len(line) > 1:  # 忽略单字符行
+                lines.append(line)
+        
+        return '\n'.join(lines)
+
+    def _filter_content(self, text: str) -> str:
+        """过滤和清理内容"""
+        # 敏感内容过滤
+        text = self._filter_sensitive_content(text)
+        
+        # 广告过滤
+        text = self._filter_advertisements(text)
+        
+        # 去除重复内容
+        text = self._remove_duplicates(text)
+        
+        # 清理 HTML
+        text = bleach.clean(text)
+        
+        # 转义特殊字符
+        text = html.escape(text)
+        
+        return text
+
+    def _filter_sensitive_content(self, text: str) -> str:
+        """过滤敏感内容"""
+        for word in self.SENSITIVE_WORDS:
+            text = re.sub(r'\b' + re.escape(word) + r'\b', '[FILTERED]', text, flags=re.IGNORECASE)
+        return text
+    
+    def _filter_advertisements(self, text: str) -> str:
+        """过滤广告"""
+        for pattern in self.AD_PATTERNS:
+            text = re.sub(pattern, '', text, flags=re.IGNORECASE)
+        return text
+    
+    def _remove_duplicates(self, text: str) -> str:
+        """去除重复内容"""
+        lines = text.split('\n')
+        unique_lines = []
+        seen = set()
+        
+        for line in lines:
+            line_hash = hashlib.md5(line.encode()).hexdigest()
+            if line_hash not in seen and line.strip():
+                seen.add(line_hash)
+                unique_lines.append(line)
+        
+        return '\n'.join(unique_lines)
+
+    def _handle_error(self, error: Exception):
+        """错误处理"""
+        if isinstance(error, Timeout):
+            logger.error("Request timed out")
+        elif isinstance(error, RequestException):
+            logger.error(f"Request failed: {str(error)}")
+        elif isinstance(error, ValueError):
+            logger.error(f"Invalid input: {str(error)}")
+        else:
+            logger.error(f"Unexpected error: {str(error)}", exc_info=True) 
