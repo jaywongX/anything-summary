@@ -1,210 +1,139 @@
 # Anything Summary
 
-Anything Summary 是一个智能文本摘要系统，支持多种格式内容的智能提取和摘要生成。
+一站式智能内容总结工具，支持多模态混合输入。
 
-![项目截图](docs/screenshot.png)
+One-stop intelligent content summary tool, supporting multi-modal mixed input.
 
-## 功能特性
+## 功能特点 / Features
 
-- 支持多种格式的内容提取和摘要：
-  - 网页链接 (URL)
-  - PDF文档 (.pdf)
-  - Word文档 (.docx)
-  - 纯文本文件 (.txt)
-  - 音频文件 (.mp3, .wav)
-  - 视频文件 (.mp4, .avi)
-- 智能文本摘要生成
-- 异步任务处理
-- RESTful API接口
-- 跨域支持
+- 多种输入方式 / Multiple input methods
+  - 文本输入 / Text input
+  - 网页链接 / Web URL
+  - 文件上传 / File upload
+- 支持多种文件格式 / Multiple file formats support
+  - 文档：PDF、Word、TXT / Documents: PDF, Word, TXT
+  - 图片：JPG、PNG、GIF（支持OCR） / Images: JPG, PNG, GIF (with OCR)
+  - 音频：MP3、WAV / Audio: MP3, WAV
+  - 视频：MP4、AVI / Video: MP4, AVI
+  - 压缩包：ZIP、RAR、7Z / Archives: ZIP, RAR, 7Z
+- 多语言支持 / Multi-language Support
+  - 中文 / Chinese
+  - 英文 / English
 
-## 快速开始
+## 部署和启动 / Deployment and Launch
 
-### 后端部署（WSL Ubuntu）
+### 环境要求 / Requirements
 
-1. 安装系统依赖
+#### 前端 / Frontend
+- Node.js >= 16
+- npm >= 8
+- Vue 3
+- 必需的依赖包 / Required dependencies:
+  - vue-i18n@9 (多语言支持 / i18n support)
+  - @uppy/core, @uppy/dashboard (文件上传 / file upload)
+  - vue-router@4 (路由 / routing)
 
+#### 后端 / Backend
+- Python >= 3.8
+- 必需的 Python 包已列在 requirements.txt / Required Python packages are listed in requirements.txt
+
+### 前端部署 / Frontend Deployment
 bash
-sudo apt-get update
-sudo apt-get install -y python3-pip python3-venv redis-server ffmpeg
+进入前端目录 / Enter frontend directory
+cd frontend
+安装依赖 / Install dependencies
+npm install
+开发环境启动 / Start development server
+npm run dev
+生产环境构建 / Build for production
+npm run build
 
-2. 创建并激活虚拟环境
-
+### 后端部署 / Backend Deployment
 bash
+# 进入后端目录 / Enter backend directory
 cd backend
+# 创建并激活虚拟环境 / Create and activate virtual environment
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # Linux/Mac
+# 或者在 Windows 下 / Or on Windows
+# .\venv\Scripts\activate
 
-3. 安装Python依赖
-
-bash
+# 安装依赖 / Install dependencies
 pip install -r requirements.txt
 
-4. 创建并配置环境变量文件 `.env`：
+# 安装 Redis (Ubuntu/Debian)
+sudo apt-get update
+sudo apt-get install redis-server
 
-bash
-# API配置
-API_HOST=0.0.0.0
-API_PORT=8000
-
-# CORS配置
-CORS_ORIGINS=["http://localhost:3000", "http://127.0.0.1:3000"]
-
-# Redis配置
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# 文件上传配置
-UPLOAD_DIR=uploads
-MAX_FILE_SIZE=104857600  # 100MB
-
-5. 启动服务（需要开三个终端）
-
-bash
-# 终端1：Redis服务
+# 启动 Redis 服务 / Start Redis service
 sudo service redis-server start
 
-# 终端2：Celery Worker
-source venv/bin/activate
+# 启动 Celery Worker / Start Celery Worker (新终端 / New terminal)
 celery -A app.celery_app worker --loglevel=info
 
-# 终端3：FastAPI服务
-source venv/bin/activate
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+# 启动开发服务器 / Start development server (新终端 / New terminal)
+sh start_dev.sh
+# 或者在 Windows 环境下 / Or on Windows
+# python app.py
 
-### 前端部署（Windows）
+### 配置说明 / Configuration
 
-1. 安装依赖
+1. 前端配置 / Frontend Configuration
+   - 在 `.env` 文件中配置 API 地址 / Configure API URL in `.env` file
+   - 默认语言设置在 `src/i18n/index.ts` / Default language settings in `src/i18n/index.ts`
+   - 支持的文件类型配置在 `src/views/SummaryPage.vue` / Supported file types in `src/views/SummaryPage.vue`
 
+2. 后端配置 / Backend Configuration
+   - 配置文件位于 `config.py` / Configuration file in `config.py`
+   - 可配置项包括：服务端口、数据库连接、文件上传限制等 / Configurable items include: service port, database connection, file upload limits, etc.
+
+### 常见问题 / Common Issues
+
+1. ModuleNotFoundError: No module named 'celery' / celery 模块未找到:
+```bash
+# 确保在虚拟环境中安装 celery
+pip install celery redis
+```
+
+2. Redis 连接问题 / Redis connection issues:
+```bash
+# 检查 Redis 服务状态 / Check Redis service status
+sudo service redis-server status
+
+# 重启 Redis 服务 / Restart Redis service
+sudo service redis-server restart
+```
+
+3. 依赖安装问题 / Dependency installation issues:
 bash
-cd frontend
+清除 npm 缓存后重新安装 / Clear npm cache and reinstall
+npm clean-cache --force
 npm install
 
-2. 配置 `vite.config.js`，替换为实际的 WSL IP 地址
+4. 跨域问题 / CORS issues:
+   - 检查 vite.config.ts 中的代理配置 / Check proxy configuration in vite.config.ts
+   - 确保后端已正确配置 CORS / Ensure backend CORS is properly configured
 
-javascript
-const WSL_IP = '172.29.223.73'  // 使用实际的IP地址
+5. 文件上传问题 / File upload issues:
+   - 检查文件大小是否超过限制（默认 100MB） / Check if file size exceeds limit (default 100MB)
+   - 确认文件类型是否在支持列表中 / Verify file type is in supported list
 
-3. 启动开发服务器
+### 开发指南 / Development Guide
 
-bash
-npm run dev
+1. 添加新的语言支持 / Add new language support:
+   - 在 `src/locales` 目录下创建新的语言文件 / Create new language file in `src/locales`
+   - 在 `src/i18n/index.ts` 中注册新语言 / Register new language in `src/i18n/index.ts`
 
-## 技术栈
+2. 修改或添加翻译 / Modify or add translations:
+   - 编辑 `src/locales` 目录下的语言文件 / Edit language files in `src/locales`
+   - 遵循已有的键值结构 / Follow existing key-value structure
 
-### 后端
-- Python 3.9+
-- FastAPI (Web框架)
-- Celery + Redis (异步任务队列)
-- PyPDF2 (PDF解析)
-- python-docx (Word文档解析)
-- FFmpeg (音视频处理)
+## 贡献 / Contributing
 
-### 前端
-- Vue 3
-- Vite
-- Vue Router
-- Uppy (文件上传)
+欢迎提交 Pull Request 或 Issue。
 
-## 项目结构
+Pull requests and issues are welcome.
 
-```bash
-anything-summary/
-├── backend/                # 后端代码
-│   ├── app/               # 应用程序代码
-│   │   ├── __init__.py
-│   │   ├── main.py       # FastAPI主程序
-│   │   ├── config.py     # 配置文件
-│   │   ├── celery_app.py # Celery配置
-│   │   ├── api/          # API接口
-│   │   │   ├── __init__.py
-│   │   │   └── endpoints/
-│   │   │       ├── __init__.py
-│   │   │       └── summary.py
-│   │   └── core/         # 核心功能
-│   │       ├── __init__.py
-│   │       ├── file_processor.py
-│   │       └── summarizer.py
-│   ├── uploads/          # 文件上传目录
-│   ├── requirements.txt  # Python依赖
-│   └── start.sh         # 启动脚本
-│
-├── frontend/              # 前端代码
-│   ├── public/           # 静态资源
-│   ├── src/              # 源代码
-│   │   ├── assets/      # 资源文件
-│   │   ├── components/  # 组件
-│   │   └── views/       # 页面
-│   ├── package.json
-│   └── vite.config.js
-```
-
-## API文档
-
-启动服务后访问：`http://localhost:8000/docs`
-
-## 常见问题
-
-1. Redis连接失败
-
-bash
-sudo service redis-server restart
-
-2. 文件上传失败
-
-bash
-# 检查uploads目录权限
-chmod 777 backend/uploads
-
-3. 端口被占用
-
-bash
-# 查看占用进程
-sudo lsof -i :8000
-# 结束进程
-sudo kill -9 <PID>
-
-## 许可证
+## 许可证 / License
 
 [MIT License](LICENSE)
-
-## 联系方式
-
-- Email：jaywong001011@gmail.com
-
-## 贡献指南
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
-
-## 开发环境
-
-- Python 3.9+
-- Node.js 16+
-- Redis 6+
-- WSL2 (Windows)
-
-## 本地开发
-
-1. 克隆项目
-```bash
-git clone https://github.com/jaywong001011/anything-summary.git
-cd anything-summary
-```
-
-2. 配置环境变量
-```bash
-# 后端
-cp backend/.env.example backend/.env
-
-# 前端
-cp frontend/.env.example frontend/.env
-```
-
-3. 按照上述部署步骤运行项目
-
-
-

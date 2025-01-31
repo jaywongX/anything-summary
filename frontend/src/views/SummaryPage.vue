@@ -113,14 +113,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 添加结果显示区域的样式 -->
-    <div v-if="summary" class="result-section">
-      <h2>处理结果</h2>
-      <div class="summary-content">
-        <pre>{{ summary }}</pre>
-      </div>
-    </div>
   </div>
 
   <!-- 联系方式弹窗 -->
@@ -409,7 +401,7 @@ const pollTaskStatus = async (taskId) => {
       const data = await response.json();
       console.log('Poll response:', data);  // 添加日志
       
-      if (data.status === 'completed') {
+      if (data.status === 'success') {
         if (data.result && data.result.summary) {
           // 处理summary可能是数组的情况
           summary.value = Array.isArray(data.result.summary) 

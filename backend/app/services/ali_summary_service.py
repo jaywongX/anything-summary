@@ -6,9 +6,8 @@ logger = logging.getLogger(__name__)
 
 class AliSummaryService:
     def __init__(self):
-        # 直接设置 API key
         dashscope.api_key = settings.ALI_API_KEY
-        self.model = 'qwen-max'  # 使用通义千问-max模型
+        self.model = 'qwen-max'
         
     def _generate_prompt(self, content: str) -> str:
         return f"""请对以下内容进行总结，要求：
@@ -24,6 +23,7 @@ class AliSummaryService:
 
     async def summarize(self, content: str) -> str:
         try:
+
             logger.info("Starting summarization with content length: %d", len(content))
             messages = [{
                 'role': 'system',

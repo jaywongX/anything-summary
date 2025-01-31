@@ -24,11 +24,20 @@ class Settings(BaseSettings):
     # ModelScope配置
     MODELSCOPE_TOKEN: str = ""
     
+    # 是否使用大模型
+    USE_LLM: bool = False
+    
     # 阿里云API配置
     ALI_API_KEY: str = ""
 
     class Config:
         case_sensitive = True
         env_file = ".env"
+        env_file_encoding = 'utf-8'
+        @classmethod
+        def parse_env_var(cls, field_name: str, raw_val: str):
+            if field_name == 'USE_LLM':
+                return raw_val.lower() in ('true', '1', 't', 'y', 'yes')
+            return raw_val
 
 settings = Settings() 

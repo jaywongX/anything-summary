@@ -1,66 +1,142 @@
-[2025-01-28 00:33:16,165: DEBUG/MainProcess] | Worker: Preparing bootsteps.
-[2025-01-28 00:33:16,203: DEBUG/MainProcess] | Worker: Building graph...
-[2025-01-28 00:33:16,204: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Beat, Timer, Hub, Pool, Autoscaler, Consumer}
-[2025-01-28 00:33:16,475: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
-[2025-01-28 00:33:16,476: DEBUG/MainProcess] | Consumer: Building graph...
-[2025-01-28 00:33:16,774: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Heart, Agent, Mingle, Tasks, Control, Gossip, event loop}
-[2025-01-28 00:33:17,005: DEBUG/MainProcess] | Worker: Starting Hub
-[2025-01-28 00:33:17,006: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:17,006: DEBUG/MainProcess] | Worker: Starting Pool
-[2025-01-28 00:33:17,007: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:17,008: DEBUG/MainProcess] | Worker: Starting Consumer
-[2025-01-28 00:33:17,008: DEBUG/MainProcess] | Consumer: Starting Connection
-[2025-01-28 00:33:17,014: INFO/MainProcess] Connected to redis://localhost:6379/0
-[2025-01-28 00:33:17,014: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:17,015: DEBUG/MainProcess] | Consumer: Starting Events
-[2025-01-28 00:33:17,016: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:17,017: DEBUG/MainProcess] | Consumer: Starting Heart
-[2025-01-28 00:33:17,019: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:17,019: DEBUG/MainProcess] | Consumer: Starting Mingle
-[2025-01-28 00:33:17,020: INFO/MainProcess] mingle: searching for neighbors
-[2025-01-28 00:33:18,029: INFO/MainProcess] mingle: sync with 1 nodes
-[2025-01-28 00:33:18,030: DEBUG/MainProcess] mingle: processing reply from worker1@LAPTOP-23FI8VL8
-[2025-01-28 00:33:18,030: INFO/MainProcess] mingle: sync complete
-[2025-01-28 00:33:18,031: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:18,031: DEBUG/MainProcess] | Consumer: Starting Tasks
-[2025-01-28 00:33:18,043: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:18,043: DEBUG/MainProcess] | Consumer: Starting Control
-[2025-01-28 00:33:18,046: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:18,046: DEBUG/MainProcess] | Consumer: Starting Gossip
-[2025-01-28 00:33:18,049: DEBUG/MainProcess] ^-- substep ok
-[2025-01-28 00:33:18,049: DEBUG/MainProcess] | Consumer: Starting event loop
-[2025-01-28 00:33:18,050: DEBUG/MainProcess] | Worker: Hub.register Pool...
-[2025-01-28 00:33:18,051: INFO/MainProcess] celery@LAPTOP-23FI8VL8 ready.
-[2025-01-28 00:33:18,052: DEBUG/MainProcess] basic.qos: prefetch_count->72
-[2025-01-28 00:33:19,593: DEBUG/MainProcess] worker1@LAPTOP-23FI8VL8 joined the party
-[2025-01-28 00:35:31,408: INFO/MainProcess] Task app.core.tasks.process_and_summarize[528003fa-2831-4e3d-ba05-714dd1bbb68b] received
-[2025-01-28 00:35:31,409: DEBUG/MainProcess] TaskPool: Apply <function fast_trace_task at 0x7f348a1e0860> (args:('app.core.tasks.process_and_summarize', '528003fa-2831-4e3d-ba05-714dd1bbb68b', {'lang': 'py', 'task': 'app.core.tasks.process_and_summarize', 'id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'parent_id': None, 'argsrepr': '()', 'kwargsrepr': "{'task_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'file_paths': ['uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt'], 'text': '', 'url': ''}", 'origin': 'gen3610@LAPTOP-23FI8VL8', 'ignore_result': False, 'stamped_headers': None, 'stamps': {}, 'properties': {'correlation_id': '528003fa-2831-4e3d-ba05-714dd1bbb68b', 'reply_to': '8ff1362b-e753-3ce5-8869-e9eea1d7ca3f', 'delivery_mode': 2, 'delivery_info': {'exchange': '', 'routing_key': 'celery'}, 'priority': 0, 'body_encoding': 'base64', 'delivery_tag': '458ef14e-3556-4aa2-8454-84276aebae10'}, 'reply_to':... kwargs:{})
-[2025-01-28 00:35:31,411: INFO/MainProcess] Starting task 528003fa-2831-4e3d-ba05-714dd1bbb68b with params: files=['uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt'], text_length=0, url=
-[2025-01-28 00:35:31,412: DEBUG/MainProcess] Using selector: EpollSelector
-[2025-01-28 00:35:31,413: INFO/MainProcess] Processing 1 files
-[2025-01-28 00:35:31,414: INFO/MainProcess] Processing file: uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt
-[2025-01-28 00:35:31,417: INFO/MainProcess] File content length: 2961
-[2025-01-28 00:35:31,418: INFO/MainProcess] Starting summarization with content length: 2961
-[2025-01-28 00:35:31,419: INFO/MainProcess] Calling Ali API with model: qwen-max
-[2025-01-28 00:35:31,420: DEBUG/MainProcess] Request body: {'model': 'qwen-max', 'parameters': {'result_format': 'message', 'max_tokens': 800, 'temperature': 0.3}, 'input': {'messages': [{'role': 'system', 'content': '你是一个专业的文本总结助手，善于提取文本的核心内容并进行精炼总结。'}, {'role': 'user', 'content': '请对以下内容进行总结，要求：\n1. 提取核心要点\n2. 保持客观准确\n3. 语言简洁清晰\n4. 按重要性排序\n5. 总结长度控制在300字以内\n\n内容如下：\ncmake_minimum_required(VERSION 3.15)\n\nfind_package(Threads REQUIRED)\n\nif (ENABLE_SSL_TESTS)\n    add_library(test_server STATIC\n                abstractServer.cpp\n                httpServer.cpp\n                httpsServer.cpp)\nelse ()\n    add_library(test_server STATIC\n                abstractServer.cpp\n                httpServer.cpp)\nendif()\nif(WIN32)\n    target_link_libraries(test_server PRIVATE Threads::Threads cpr::cpr GTest::GTest\n                                      PUBLIC mongoose ws2_32 wsock32)\nelse()\n    target_link_libraries(test_server PRIVATE Threads::Threads cpr::cpr GTest::GTest\n                                      PUBLIC mongoose)\nendif()\n\nmacro(add_cpr_test _TEST_NAME)\n    add_executable(${_TEST_NAME}_tests ${_TEST_NAME}_tests.cpp)\n    target_link_libraries(${_TEST_NAME}_tests PRIVATE\n        test_server\n        GTest::GTest\n        cpr::cpr\n        CURL::libcurl)\n    add_test(NAME cpr_${_TEST_NAME}_tests COMMAND ${_TEST_NAME}_tests)\n    # Group under the "tests" project folder in IDEs such as Visual Studio.\n    set_property(TARGET ${_TEST_NAME}_tests PROPERTY FOLDER "tests")\n    if(WIN32 AND BUILD_SHARED_LIBS)\n        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libcurl> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)\n        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:cpr> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)\n    endif()\nendmacro()\n\nadd_cpr_test(get)\nadd_cpr_test(post)\nadd_cpr_test(session)\nadd_cpr_test(prepare)\nadd_cpr_test(async)\nadd_cpr_test(proxy)\nadd_cpr_test(head)\nadd_cpr_test(delete)\nadd_cpr_test(put)\nadd_cpr_test(callback)\nadd_cpr_test(raw_body)\nadd_cpr_test(options)\nadd_cpr_test(patch)\nadd_cpr_test(error)\nadd_cpr_test(alternating)\nadd_cpr_test(util)\nadd_cpr_test(structures)\nadd_cpr_test(encoded_auth)\nadd_cpr_test(proxy_auth)\nadd_cpr_test(version)\nadd_cpr_test(download)\n\nif (ENABLE_SSL_TESTS)\n    add_cpr_test(ssl)\n    \n    # Install all ssl keys and certs:\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:ssl_tests>/data)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.pubkey $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.key $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/server.cer $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/client.key $<TARGET_FILE_DIR:ssl_tests>)\n    add_custom_command(TARGET ssl_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/data/client.cer $<TARGET_FILE_DIR:ssl_tests>)\nendif()\n\n'}]}}
-[2025-01-28 00:35:31,425: DEBUG/MainProcess] Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
-[2025-01-28 00:35:42,633: DEBUG/MainProcess] https://dashscope.aliyuncs.com:443 "POST /api/v1/services/aigc/text-generation/generation HTTP/1.1" 200 None
-[2025-01-28 00:35:42,634: DEBUG/MainProcess] Response: {'output': {'choices': [{'finish_reason': 'stop', 'message': {'role': 'assistant', 'content': '该CMake脚本主要定义了一个测试服务器库和一系列cpr库的测试用例。核心要点如下：\n\n1. **项目配置**：要求最低CMake版本为3.15，并查找线程支持。\n2. **构建测试服务器库**：\n   - 根据`ENABLE_SSL_TESTS`标志决定是否包含HTTPS服务器代码。\n   - 在Windows平台上，链接额外的库（如`ws2_32`和`wsock32`）。\n3. **定义宏`add_cpr_test`**：用于创建并配置多个cpr库的测试用例，包括编译、链接、添加测试命令及在IDE中设置文件夹属性。\n4. **具体测试用例**：通过调用`add_cpr_test`宏，为各种HTTP方法（如GET, POST等）及其他功能（如异步请求、代理支持等）生成测试。\n5. **SSL测试支持**：如果启用了SSL测试，则会添加一个专门针对SSL的测试用例，并在构建后复制相关的证书和密钥文件到目标目录。\n\n此脚本展示了如何使用CMake来组织和管理复杂的多平台测试环境。'}}]}, 'usage': {'prompt_tokens_details': {'cached_tokens': 0}, 'total_tokens': 1079, 'output_tokens': 250, 'input_tokens': 829}, 'request_id': '3608ab70-5707-95cc-98be-fd6b39e8c884'}
-[2025-01-28 00:35:42,635: INFO/MainProcess] Received response from Ali API with status code: 200
-[2025-01-28 00:35:42,636: INFO/MainProcess] Successfully generated summary with length: 445
-[2025-01-28 00:35:42,637: INFO/MainProcess] Task 528003fa-2831-4e3d-ba05-714dd1bbb68b completed successfully with summary length: 512
-[2025-01-28 00:35:42,641: INFO/MainProcess] Cleaned up file: uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt
-[2025-01-28 00:35:42,643: INFO/MainProcess] Task app.core.tasks.process_and_summarize[528003fa-2831-4e3d-ba05-714dd1bbb68b] succeeded in 11.233115681003255s: {'status': 'success', 'summary': '文件 uploads/528003fa-2831-4e3d-ba05-714dd1bbb68b_CMakeLists.txt 摘要:
-该CMake脚本主要定义了一个测试服务器库和一系列cpr库的测试用例。核心要点如下：
+[2025-01-31 10:58:34,915: INFO/MainProcess] Task app.core.tasks.process_and_summarize[b852490f-c34e-4b35-ba5c-5f9090a969a2] received
+[2025-01-31 10:58:34,927: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 10:58:34,999: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[b852490f-c34e-4b35-ba5c-5f9090a969a2] succeeded in 0.07976318200235255s: {'status': 'success', 'summary': '文本内容:
+1'}
+[2025-01-31 10:59:42,315: INFO/MainProcess] Task app.core.tasks.process_and_summarize[139270f9-fa6b-4467-8180-055fa2daf4e5] received
+[2025-01-31 10:59:42,323: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 10:59:42,348: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[139270f9-fa6b-4467-8180-055fa2daf4e5] succeeded in 0.029203441008576192s: {'status': 'success', 'summary': '文本内容:
+2'}
+[2025-01-31 11:39:21,217: INFO/MainProcess] Task app.core.tasks.process_and_summarize[80dd34f9-e199-4b32-937d-3cf165a1309f] received
+[2025-01-31 11:39:21,225: INFO/MainProcess] Task app.core.tasks.process_and_summarize[80dd34f9-e199-4b32-937d-3cf165a1309f] succeeded in 0.006743202000507154s: {'status': 'success', 'summary': '文本内容:
+3'}
+[2025-01-31 11:40:13,554: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2025-01-31 11:40:13,558: INFO/MainProcess] mingle: searching for neighbors
+[2025-01-31 11:40:13,569: DEBUG/MainProcess] pidbox received method hello(from_node='celery@LAPTOP-23FI8VL8', revoked={}) [reply_to:{'exchange': 'reply.celery.pidbox', 'routing_key': 'd860f739-7227-32fe-bf11-149386601d63'} ticket:8342435f-5d7e-4ce0-b469-8353e17adb80]
+[2025-01-31 11:40:14,595: WARNING/MainProcess] /mnt/d/git/anything-summary/backend/venv/lib/python3.12/site-packages/celery/app/control.py:56: DuplicateNodenameWarning: Received multiple replies from node name: celery@LAPTOP-23FI8VL8.
+Please make sure you give each node a unique nodename using
+the celery worker `-n` option.
+  warnings.warn(DuplicateNodenameWarning(
 
-1. **项目配置**：要求最低CMake版本为3.15，并查找线程支持。
-2. **构建测试服务器库**：
-   - 根据`ENABLE_SSL_TESTS`标志决定是否包含HTTPS服务器代码。
-   - 在Windows平台上，链接额外的库（如`ws2_32`和`wsock32`）。
-3. **定义宏`add_cpr_test`**：用于创建并配置多个cpr库的测试用例，包括编译、链接、添加测试命令及在IDE中设置文件夹属性。
-4. **具体测试用例**：通过调用`add_cpr_test`宏，为各种HTTP方法（如GET, POST等）及其他功能（如异步请求、代理支持等）生成测试。
-5. **SSL测试支持**：如果启用了SSL测试，则会添加一个专门针对SSL的测试用例，并在构建后复制相关的证书和密钥文件到目标目录。
+[2025-01-31 11:40:14,596: INFO/MainProcess] mingle: all alone
+[2025-01-31 11:40:14,643: INFO/MainProcess] celery@LAPTOP-23FI8VL8 ready.
+[2025-01-31 11:40:14,645: DEBUG/MainProcess] basic.qos: prefetch_count->1
+[2025-01-31 11:40:47,398: INFO/MainProcess] Task app.core.tasks.process_and_summarize[6a25a168-e3a8-4f97-821e-6a9400613514] received
+[2025-01-31 11:40:47,407: INFO/MainProcess] Task app.core.tasks.process_and_summarize[6a25a168-e3a8-4f97-821e-6a9400613514] succeeded in 0.007597214003908448s: {'status': 'success', 'summary': '文本内容:
+3'}
+[2025-01-31 11:41:55,708: DEBUG/MainProcess] | Worker: Closing Hub...
+[2025-01-31 11:41:55,709: DEBUG/MainProcess] | Worker: Closing Pool...
+[2025-01-31 11:41:55,711: DEBUG/MainProcess] | Worker: Closing Consumer...
+[2025-01-31 11:41:55,712: DEBUG/MainProcess] | Worker: Stopping Consumer...
+[2025-01-31 11:41:55,714: DEBUG/MainProcess] | Consumer: Closing Connection...
+[2025-01-31 11:41:55,715: DEBUG/MainProcess] | Consumer: Closing Events...
+[2025-01-31 11:41:55,716: DEBUG/MainProcess] | Consumer: Closing Mingle...
+[2025-01-31 11:41:55,717: DEBUG/MainProcess] | Consumer: Closing Tasks...
+[2025-01-31 11:41:55,718: DEBUG/MainProcess] | Consumer: Closing Control...
+[2025-01-31 11:41:55,718: DEBUG/MainProcess] | Consumer: Closing Heart...
+[2025-01-31 11:41:55,719: DEBUG/MainProcess] | Consumer: Closing Gossip...
+[2025-01-31 11:41:55,720: DEBUG/MainProcess] | Consumer: Closing event loop...
+[2025-01-31 11:41:55,721: DEBUG/MainProcess] | Consumer: Stopping event loop...
+[2025-01-31 11:41:55,721: DEBUG/MainProcess] | Consumer: Stopping Gossip...
+[2025-01-31 11:41:55,725: DEBUG/MainProcess] | Consumer: Stopping Heart...
+[2025-01-31 11:41:55,727: DEBUG/MainProcess] | Consumer: Stopping Control...
+[2025-01-31 11:41:55,729: DEBUG/MainProcess] | Consumer: Stopping Tasks...
+[2025-01-31 11:41:55,730: DEBUG/MainProcess] Canceling task consumer...
+[2025-01-31 11:41:55,731: DEBUG/MainProcess] | Consumer: Stopping Mingle...
+[2025-01-31 11:41:55,732: DEBUG/MainProcess] | Consumer: Stopping Events...
+[2025-01-31 11:41:55,733: DEBUG/MainProcess] | Consumer: Stopping Connection...
+[2025-01-31 11:41:55,734: DEBUG/MainProcess] | Worker: Stopping Pool...
+[2025-01-31 11:41:55,735: DEBUG/MainProcess] | Worker: Stopping Hub...
+[2025-01-31 11:41:55,736: DEBUG/MainProcess] | Consumer: Shutdown Gossip...
+[2025-01-31 11:41:55,737: DEBUG/MainProcess] | Consumer: Shutdown Heart...
+[2025-01-31 11:41:55,738: DEBUG/MainProcess] | Consumer: Shutdown Control...
+[2025-01-31 11:41:55,739: DEBUG/MainProcess] | Consumer: Shutdown Tasks...
+[2025-01-31 11:41:55,740: DEBUG/MainProcess] Canceling task consumer...
+[2025-01-31 11:41:55,741: DEBUG/MainProcess] Closing consumer channel...
+[2025-01-31 11:41:55,742: DEBUG/MainProcess] | Consumer: Shutdown Events...
+[2025-01-31 11:41:55,744: DEBUG/MainProcess] | Consumer: Shutdown Connection...
+[2025-01-31 11:43:46,828: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2025-01-31 11:43:46,835: INFO/MainProcess] mingle: searching for neighbors
+[2025-01-31 11:43:47,851: INFO/MainProcess] mingle: all alone
+[2025-01-31 11:43:47,894: INFO/MainProcess] celery@LAPTOP-23FI8VL8 ready.
+[2025-01-31 11:43:47,895: DEBUG/MainProcess] basic.qos: prefetch_count->1
+[2025-01-31 11:44:54,409: INFO/MainProcess] Task app.core.tasks.process_and_summarize[1f61d3e1-8c39-41da-96b4-487a1e9046d6] received
+[2025-01-31 11:44:54,423: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:44:54,430: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[1f61d3e1-8c39-41da-96b4-487a1e9046d6] succeeded in 0.016774985007941723s: {'status': 'success', 'summary': '文本内容:
+1'}
+[2025-01-31 11:49:31,979: INFO/MainProcess] Connected to redis://localhost:6379/0
+[2025-01-31 11:49:31,985: INFO/MainProcess] mingle: searching for neighbors
+[2025-01-31 11:49:32,999: INFO/MainProcess] mingle: all alone
+[2025-01-31 11:49:33,033: INFO/MainProcess] celery@LAPTOP-23FI8VL8 ready.
+[2025-01-31 11:49:33,034: DEBUG/MainProcess] basic.qos: prefetch_count->1
+[2025-01-31 11:49:47,424: INFO/MainProcess] Task app.core.tasks.process_and_summarize[645625ca-07a9-4086-9de8-5ac3e958dc84] received
+[2025-01-31 11:49:47,434: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:49:47,442: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[645625ca-07a9-4086-9de8-5ac3e958dc84] succeeded in 0.015520243992796168s: {'status': 'success', 'summary': '文本内容:
+1'}
+[2025-01-31 11:49:50,474: INFO/MainProcess] Task app.core.tasks.process_and_summarize[d12fa6a5-0144-4107-9f80-803e99077e81] received
+[2025-01-31 11:49:50,482: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:49:50,490: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[d12fa6a5-0144-4107-9f80-803e99077e81] succeeded in 0.012541916992631741s: {'status': 'success', 'summary': '文本内容:
+2'}
+[2025-01-31 11:49:52,642: INFO/MainProcess] Task app.core.tasks.process_and_summarize[92b9a02d-7195-43e2-a6ea-40b7263f82dc] received
+[2025-01-31 11:49:52,650: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:49:52,658: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[92b9a02d-7195-43e2-a6ea-40b7263f82dc] succeeded in 0.013058251002803445s: {'status': 'success', 'summary': '文本内容:
+3'}
+[2025-01-31 11:49:59,860: INFO/MainProcess] Task app.core.tasks.process_and_summarize[c173ef81-3abb-43fd-8506-39def922c19b] received
+[2025-01-31 11:49:59,865: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:49:59,872: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[c173ef81-3abb-43fd-8506-39def922c19b] succeeded in 0.00942554700304754s: {'status': 'success', 'summary': '文本内容:
+4'}
+[2025-01-31 11:50:23,811: INFO/MainProcess] Task app.core.tasks.process_and_summarize[9854de93-2f50-435e-a904-3b7b321cff2b] received
+[2025-01-31 11:50:23,819: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:50:23,838: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[9854de93-2f50-435e-a904-3b7b321cff2b] succeeded in 0.02406350900128018s: {'status': 'success', 'summary': '文件 d841b3b0-9355-48da-814a-5999640a9df6_summary (1).txt 内容:
+文件 5b26444d-955b-4951-a2cf-fb65c027796a_CMakeLists.txt 内容:
+cmake_minimum_required(VERSION 3.15)
+project(cpr VERSION 1.8.1 LANGUAGES CXX)
 
-此脚本展示了如何使用CMake来组织和管理复杂的多平台测试环境。'}
-[2025-01-28 00:35:42,644: INFO/MainProcess] missed heartbeat from worker1@LAPTOP-23FI8VL8
-[2025-01-28 00:35:42,645: DEBUG/MainProcess] worker1@LAPTOP-23FI8VL8 joined the party
+math(EXPR cpr_VERSION_NUM "${cpr_VERSION_MAJOR} * 0x10000 + ${cpr_VERSION_MINOR} * 0x100 + ${cpr_VERSION_PATCH}" OUTPUT_FORMAT HEXADECIMAL)
+configure_file("${cpr_SOURCE_DIR}/cmake/cprver.h.in" "${cpr_BINARY_DIR}/cpr_generated_includes/cpr/cprver.h")
+
+# Only change the folder behaviour if cpr is not a subproject
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
+    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+    set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+endif()
+
+# Avoid the dll boilerplate code for windows
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CPR_LIBRARIES cpr CACHE INTERNAL...'}
+[2025-01-31 11:51:01,223: INFO/MainProcess] Task app.core.tasks.process_and_summarize[5a54d998-9fba-468d-a838-8e5890fceb3d] received
+[2025-01-31 11:51:01,231: DEBUG/ForkPoolWorker-1] Using selector: EpollSelector
+[2025-01-31 11:51:01,844: INFO/ForkPoolWorker-1] Task app.core.tasks.process_and_summarize[5a54d998-9fba-468d-a838-8e5890fceb3d] succeeded in 0.6178228149947245s: {'status': 'success', 'summary': '文件 441a8496-35e1-4471-a277-e950c42fff3b_c197-202305009.pdf 内容:
+二十一世紀評論 
+31
+此項研究在這樣的猜想基礎上進行，即學習以及智能的任何其他特
+性的每一方面在原則上都能被精確描述，以致可使一台機器來模擬
+它。我們會嘗試尋求如何讓機器使用語言，形成抽象和概念，解決
+現在留待人類解決的問題，並提升自己。
+——1956年達特茅斯會議人工智能（AI）定義1
+2020至2022年，在新冠疫情肆虐全球的陰霾日子裏，人工智能（AI）創新
+的步伐完全沒有停止。美國人工智能研究公司OpenAI異軍突起：2020年4月
+發布神經網絡Jukebox2；5月發布語言模型GPT-33；6月開放人工智能應用
+程式介面（Application Programming Interface, API）；2021年1月發布連接文本和 
+圖像的神經網絡CLIP4；同月發布從文本創建圖像的神經網絡DALL • E5；
+2022年11月正式推出了對話互動式的聊天機器人程式ChatGPT6。相比於
+GPT-3，ChatGPT引入了基於人類回饋的強化學習（Reinforcement Learning from  
+Human Feedback, RLHF）技術以及獎勵機制7。
+GPT-3的發布是人類科技史上的里程碑事件，在短短幾個月席捲全球，速
+度超過人類最狂野的想像。GPT-3證明了一個具有高水平複雜結構和大量參 
+數的人工智能大模型（foundation model，又稱「基礎模型」）可以實現深度學習
+（deep learning）。此後，大模型概念得到前所未有的關注和討論。但是，關於
+「大模型」的定義，對其內涵的理解和詮釋卻莫衷一是，「橫看成嶺側成峰，遠
+近高低各不同」。
+儘管如此，並不妨礙人們形成了關於大模型的基本共識：大模型是大語
+言模型（Large Language Model, LLM），也是多模態模型（multimodal model）。 
+GPT是大模型的一種形態，G代表生成性的（generative），P代表經過預訓 
+人工智能大模型
+——當代歷史的標誌性事件及其意義
+二十一世紀雙月刊　2023年6月號　總第一九七期
+
+32...'}
