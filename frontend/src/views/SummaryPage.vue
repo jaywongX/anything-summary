@@ -41,7 +41,7 @@
         </div>
         
         <!-- URL输入区 -->
-        <div class="url-inputs">
+        <div class="url-inputs" :class="{ disabled: isUrlDisabled }">
           <div v-for="(url, index) in urls" :key="'url-'+index" class="url-input-group">
             <div class="input-wrapper">
               <input 
@@ -49,6 +49,7 @@
                 type="text" 
                 class="form-input"
                 :placeholder="t('input.url.placeholder')"
+                :disabled="isUrlDisabled"
               >
               <button @click="removeUrl(index)" class="remove-btn" v-if="urls.length > 1" :title="t('input.delete')">
                 ×
@@ -61,13 +62,14 @@
         </div>
 
         <!-- 文本输入区 -->
-        <div class="text-inputs">
+        <div class="text-inputs" :class="{ disabled: isTextDisabled }">
           <div v-for="(text, index) in texts" :key="'text-'+index" class="text-input-group">
             <div class="input-wrapper">
               <textarea 
                 v-model="texts[index]" 
                 class="form-input"
                 :placeholder="t('input.text.placeholder')"
+                :disabled="isTextDisabled"
                 rows="3"
               ></textarea>
               <button @click="removeText(index)" class="remove-btn" v-if="texts.length > 1" :title="t('input.delete')">
@@ -81,8 +83,8 @@
         </div>
 
         <!-- 文件上传区域 -->
-        <div class="file-upload">
-          <div id="uppy"></div>
+        <div class="file-upload" :class="{ disabled: isFileDisabled }">
+          <div id="uppy" :class="{ disabled: isFileDisabled }"></div>
         </div>
 
         <button @click="handleSubmit" class="submit-btn" :disabled="!hasInput">
@@ -183,22 +185,23 @@ const formattedSummary = computed(() => {
   return summary.value.replace(/\n/g, '<br>')
 })
 
-// 修改计算属性，检查是否有任何输入
-const hasInput = computed(() => {
-  // 检查URL输入
-  const hasUrls = urls.value.some(url => {
-    const trimmedUrl = url.trim()
-    return trimmedUrl !== '' && isValidUrl(trimmedUrl)
-  })
-  
-  // 检查文本输入
-  const hasTexts = texts.value.some(text => text.trim() !== '')
-  
-  // 检查文件上传 - 使用响应式引用
-  const hasUploadedFiles = uploadedFiles.value.length > 0
-  
-  return hasUrls || hasTexts || hasUploadedFiles
+// 添加计算属性来检查输入类型
+const inputType = computed(() => {
+  if (urls.value.some(url => url.trim() !== '')) return 'url'
+  if (texts.value.some(text => text.trim() !== '')) return 'text'
+  if (uploadedFiles.value.length > 0) return 'file'
+  return null
 })
+
+// 修改 hasInput 计算属性
+const hasInput = computed(() => {
+  return inputType.value !== null
+})
+
+// 添加禁用状态计算属性
+const isUrlDisabled = computed(() => inputType.value && inputType.value !== 'url')
+const isTextDisabled = computed(() => inputType.value && inputType.value !== 'text')
+const isFileDisabled = computed(() => inputType.value && inputType.value !== 'file')
 
 // 允许的文件类型配置
 const allowedFileTypes = {
@@ -378,7 +381,14 @@ const handleSubmit = async () => {
     console.log('Submit response:', data);  // 添加日志
     
     if (data.task_id) {
-      await pollTaskStatus(data.task_id);
+      const result = await pollTaskStatus(data.task_id);
+      if (!result.success) {
+        showError(result.error);
+        return;
+      }
+      
+      // 处理成功结果
+      handleSuccess(result.summary);
     } else {
       throw new Error('No task ID received');
     }
@@ -392,43 +402,48 @@ const handleSubmit = async () => {
 
 const pollTaskStatus = async (taskId) => {
   try {
-    let retries = 0;
-    const maxRetries = 180;  // 增加到3分钟
-    const interval = 1000;  // 每秒轮询一次
+    const response = await fetch(`${config.API_BASE_URL}/summary/${taskId}`);
+    const data = await response.json();
     
-    while (retries < maxRetries) {
-      const response = await fetch(`${config.API_BASE_URL}/summary/${taskId}`);
-      const data = await response.json();
-      console.log('Poll response:', data);  // 添加日志
-      
-      if (data.status === 'success') {
-        if (data.result && data.result.summary) {
-          // 处理summary可能是数组的情况
-          summary.value = Array.isArray(data.result.summary) 
-            ? data.result.summary.join('\n\n')  // 如果是数组，用双换行符连接
-            : data.result.summary;
-          console.log('Summary length:', summary.value.length);
-          break;
-        } else {
-          console.error('Invalid result format:', data);
-          throw new Error('无效的结果格式');
-        }
-      } else if (data.status === 'error') {
-        throw new Error(data.error || '处理失败');
+    if (data.status === 'error') {
+      return {
+        success: false,
+        error: data.error
+      };
+    }
+    
+    if (data.status === 'pending') {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return await pollTaskStatus(taskId);
+    }
+    
+    if (data.status === 'success') {
+      if (data.summary) {  // 直接检查 summary 字段
+        return {
+          success: true,
+          summary: data.summary
+        };
+      } else {
+        throw new Error('无效的结果格式');
       }
-      
-      retries++;
-      await new Promise(resolve => setTimeout(resolve, interval));
     }
     
-    if (retries >= maxRetries) {
-      throw new Error('处理超时，请稍后重试');
-    }
+    throw new Error('未知的状态');
   } catch (error) {
-    console.error('Error polling task status:', error);
-    throw error;
+    return {
+      success: false,
+      error: error.message
+    };
   }
 };
+
+function showError(message) {
+  alert(message)
+}
+
+function handleSuccess(message) {
+  summary.value = message;
+}
 
 // URL格式验证函数
 const isValidUrl = (url: string) => {
@@ -870,5 +885,14 @@ pre {
 .lang-btn:hover {
   background: #f5f5f5;
   border-color: #ccc;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.disabled input, .disabled textarea {
+  background-color: #f5f5f5;
 }
 </style> 
